@@ -21,4 +21,9 @@ class DictTypes extends Enum
      * 任务状态
      */
     const MISSION_STATUS = 'type_mission_status';
+
+    /**
+     * 时间算法
+     */
+    const MISSION_ARITHMETIC = 'type_mission_arithmetic';
 }

@@ -136,7 +136,13 @@
                         <li><a href="#"><i class="fa fa-star-o"></i>权限</a></li>
                     </ul>
                 </li>
-
+                <li><a href="#"><i class="fa fa-star-o"></i>当前状态</a></li>
+                <li><a href="{{url('/mission')}}"><i class="fa fa-star-o"></i>任务列表</a></li>
+                <li><a href="{{url('/staff')}}"><i class="fa fa-star-o"></i>人员列表</a></li>
+                <li><a href="{{url('/mission_template')}}"><i class="fa fa-star-o"></i>任务模板</a></li>
+                <li><a href="#"><i class="fa fa-star-o"></i>操作日志</a></li>
+                <li><a href="#"><i class="fa fa-star-o"></i>系统设置</a></li>
+                <li><a href="#"><i class="fa fa-star-o"></i></a></li>
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-pie-chart"></i>

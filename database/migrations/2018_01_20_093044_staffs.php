@@ -29,7 +29,7 @@ class Staffs extends Migration
         
         $table->String('status');
 
-        $table->String('description');
+        $table->String('description')->nullable();
 
         /**
          * Foreignkeys section

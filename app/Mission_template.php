@@ -21,5 +21,15 @@ class Mission_template extends Model
 	
     protected $table = 'mission_templates';
 
-	
+    protected $appends= [
+        'post_name'
+    ];
+    public function post()
+    {
+        return $this->belongsTo(Dict::class,'post_id');
+    }
+    public function getPostNameAttribute()
+    {
+        return $this->post->name;
+	}
 }

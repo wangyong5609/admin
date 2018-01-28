@@ -18,9 +18,24 @@ class Staff extends Model
 	use SoftDeletes;
 
 	protected $dates = ['deleted_at'];
-    
+    protected $fillable = [
+        'name','post','status','description'
+    ];
 	
     protected $table = 'staffs';
+
+    protected $appends = [
+        'post_name','status_name'
+    ];
+
+    public function getPostNameAttribute()
+    {
+        return $this->postDict->name;
+    }
+    public function getStatusNameAttribute()
+    {
+        return $this->statusDict->name;
+    }
 
     public function postDict()
     {

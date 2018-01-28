@@ -33,10 +33,17 @@ class DictsTableSeeder extends Seeder
             [
                 'type' => \App\Enums\DictTypes::MISSION_STATUS,
                 'items' => [
-                    '新建' => 'new',
-                    '进行中' => 'doing',
-                    '已结束' => 'over',
-                    '关闭' => 'close',
+                    '尚未安排' => 'new',
+                    '正在进行' => 'doing',
+                    '排除等待' => 'wait',
+                    '已经完成' => 'complete',
+                ],
+            ],
+            [
+                'type' => \App\Enums\DictTypes::MISSION_ARITHMETIC,
+                'items' => [
+                    '单个' => 'simple',
+                    '批量' => 'batch',
                 ],
             ],
         ];
