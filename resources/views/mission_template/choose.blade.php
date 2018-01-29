@@ -4,7 +4,7 @@
         任务模板
     </h1>
     <ol class="breadcrumb">
-        <li class="active">任务模板 - 任务模板列表</li>
+        <li class="active">任务模板 - 选择任务模板</li>
     </ol>
 @stop
 
@@ -49,9 +49,8 @@
                             <td>{!!$template->sustain!!}天</td>
                             <td>{!!$template->arithmetic!!}天</td>
                             <td>
-                                <div class = ''>
-                                    <a href = '#modal1' > 修改 </a>
-                                    <a href = '#'> 删除 </a>
+                                <div class = 'row'>
+                                    <a href = '#'>使用</a>
                                 </div>
                             </td>
                         </tr>

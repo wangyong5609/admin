@@ -5,7 +5,7 @@
     <header class="main-header">
         <a href="{{url('/dashboard')}}" class="logo">
             <span class="logo-mini">LC</span>
-            <span class="logo-lg"><b>AdminLC</b></span>
+            <span class="logo-lg"><b>{{ env('APP_NAME','Laravel') }}</b></span>
         </a>
         <nav class="navbar navbar-static-top">
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -142,7 +142,6 @@
                 <li><a href="{{url('/mission_template')}}"><i class="fa fa-star-o"></i>任务模板</a></li>
                 <li><a href="#"><i class="fa fa-star-o"></i>操作日志</a></li>
                 <li><a href="#"><i class="fa fa-star-o"></i>系统设置</a></li>
-                <li><a href="#"><i class="fa fa-star-o"></i></a></li>
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-pie-chart"></i>

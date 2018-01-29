@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Dict;
 use App\Enums\DictTypes;
-use Illuminate\Support\Facades\App;
+use App\Http\Requests\MissionRequest;
+use App\Mission_template;
+use App\Helper\Util;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Mission;
-use Amranidev\Ajaxis\Ajaxis;
 use URL;
 
 /**
@@ -19,16 +19,19 @@ use URL;
  */
 class MissionController extends Controller
 {
+    use Util;
     /**
      * Display a listing of the resource.
      *
      * @return  \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = 'Index - mission';
-        $missions = Mission::paginate(6);
-        return view('mission.index',compact('missions','title'));
+        $query = $this->applyFilters(Mission::query());
+        $missions = $query->paginate(20);
+        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
+        return view('mission.index',compact('missions','title','posts'));
     }
 
     /**
@@ -43,9 +46,11 @@ class MissionController extends Controller
         return view('mission.create',compact('posts','arithmetic'));
     }
 
-    public function chooseTem()
-    {
 
+    public function choose()
+    {
+        $templates = Mission_template::paginate(6);
+        return view('mission_template.choose',compact('templates'));
     }
     /**
      * Store a newly created resource in storage.
@@ -53,7 +58,7 @@ class MissionController extends Controller
      * @param    \Illuminate\Http\Request  $request
      * @return  \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(MissionRequest $request)
     {
         $mission = new Mission();
 
@@ -67,7 +72,7 @@ class MissionController extends Controller
         $mission->description = $request->description;
 
         
-        $mission->status = $request->status;
+        $mission->status = Dict::where('type',DictTypes::MISSION_STATUS)->where('code','new')->first()->id;
 
         
         $mission->start_time = $request->start_time;
@@ -91,15 +96,6 @@ class MissionController extends Controller
         
         $mission->save();
 
-        $pusher = App::make('pusher');
-
-        //default pusher notification.
-        //by default channel=test-channel,event=test-event
-        //Here is a pusher notification example when you create a new resource in storage.
-        //you can modify anything you want or use it wherever.
-        $pusher->trigger('test-channel',
-                         'test-event',
-                        ['message' => 'A new mission has been created !!']);
 
         return redirect('mission');
     }
@@ -140,7 +136,10 @@ class MissionController extends Controller
 
         
         $mission = Mission::findOrfail($id);
-        return view('mission.edit',compact('title','mission'  ));
+        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
+        $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
+        $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
+        return view('mission.edit',compact('title','mission','posts','status','arithmetic'  ));
     }
 
     /**

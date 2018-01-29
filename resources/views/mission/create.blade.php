@@ -12,11 +12,13 @@
         <li class="active"><a href="{{url('/admin/article/index')}}">任务 - 新建任务</a></li>
     </ol>
 @stop
+
 @section('content')
 
     <div class = 'container'>
         <h2 class="page-header">新建任务</h2>
-        <a href="{{url('/dashboard')}}"  class="btn btn-primary margin-bottom">选择模板<a/>
+        <a href="{{url('/choose')}}" class="btn btn-primary margin-bottom" >选择模板<a/>
+
         <form method="POST" action="{{url('/mission')}}" accept-charset="utf-8">
             {!! csrf_field() !!}
             <div class="nav-tabs-custom">
@@ -51,6 +53,24 @@
                                     placeholder="任务描述" maxlength="80">
                         </div>
                         <div class="form-group">
+                            <label>起始时间
+                            </label>
+                            <input  id="start_time" name = "start_time" type="date" required="required"  class="form-control"  autocomplete="off"
+                                    placeholder="起始时间" maxlength="80">
+                        </div>
+                        <div class="form-group">
+                            <label>结束时间
+                            </label>
+                            <input  id="end_time" name = "end_time" type="date" required="required" class="form-control"  autocomplete="off"
+                                    placeholder="结束时间" maxlength="80">
+                        </div>
+                        <div class="form-group">
+                            <label>任务量
+                            </label>
+                            <input  id="amount" name = "amount" type="number" class="form-control"  autocomplete="off"
+                                    placeholder="任务量" maxlength="80">
+                        </div>
+                        <div class="form-group">
                             <label>任务上限
                                 <small class="text-red">*</small>
                             </label>
@@ -61,7 +81,7 @@
                             <label>持续时间
                                 <small class="text-red">*</small>
                             </label>
-                            <input required="required" id="sustain" name = "sustain" type="number" class="form-control"  autocomplete="off"
+                            <input required="required" id="sustain" name = "sustain" type="text" class="form-control"  autocomplete="off"
                                    placeholder="持续时间" maxlength="80">
                         </div>
                         <div class="form-group">

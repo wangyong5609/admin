@@ -32,7 +32,7 @@ Route::group(['middleware'=> 'web'],function(){
     Route::get('mission/{id}/delete','\App\Http\Controllers\MissionController@destroy');
     Route::get('mission/{id}/deleteMsg','\App\Http\Controllers\MissionController@DeleteMsg');
 });
-
+Route::get('choose','\App\Http\Controllers\MissionController@choose');
 //mission_template Routes
 Route::group(['middleware'=> 'web'],function(){
     Route::resource('mission_template','\App\Http\Controllers\Mission_templateController');

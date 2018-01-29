@@ -35,4 +35,32 @@ class Mission extends Model
     {
         return $this->belongsTo(Dict::class,'status');
     }
+
+    public function getCompleteTimeAttribute()
+    {
+        if ( empty($this->attributes['complete_time']) )
+            return '未完成';
+        return $this->attributes['complete_time'];
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(Staff::class,'staff_id');
+    }
+
+    public function getStaffNameAttribute()
+    {
+        if (empty($this->staff))
+            return '未分配';
+        return $this->staff->name;
+    }
+
+    public function getPostNameAttribute()
+    {
+        return $this->post->name;
+    }
+    public function getStatusNameAttribute()
+    {
+        return $this->statusDict->name;
+    }
 }

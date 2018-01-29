@@ -34,11 +34,11 @@ class Missions extends Migration
         
         $table->date('end_time');
         
-        $table->date('complete_time');
+        $table->date('complete_time')->nullable();
         
         $table->float('amount');
         
-        $table->integer('staff_id');
+        $table->integer('staff_id')->nullable();
         
         $table->integer('upper');
         
