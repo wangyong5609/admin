@@ -18,7 +18,9 @@ class Mission_template extends Model
 
 	protected $dates = ['deleted_at'];
     
-	
+	protected $fillable = [
+	    'name','post_id','description','upper','sustain','arithmetic'
+    ];
     protected $table = 'mission_templates';
 
     protected $appends= [
@@ -32,4 +34,14 @@ class Mission_template extends Model
     {
         return $this->post->name;
 	}
+
+    public function arithmeticDict()
+    {
+        return $this->belongsTo(Dict::class,'arithmetic');
+    }
+
+    public function getArithmeticNameAttribute()
+    {
+        return $this->arithmeticDict->name;
+    }
 }

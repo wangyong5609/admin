@@ -41,6 +41,10 @@ class Missions extends Migration
         $table->integer('staff_id')->nullable();
         
         $table->integer('upper');
+
+        $table->float('sustain');
+
+        $table->integer('arithmetic');
         
         /**
          * Foreignkeys section

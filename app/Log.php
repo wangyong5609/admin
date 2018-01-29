@@ -21,5 +21,18 @@ class Log extends Model
 	
     protected $table = 'logs';
 
-	
+    public function mission()
+    {
+        return $this->belongsTo(Mission::class,'mission_id');
+	}
+
+    public function getMissionNameAttribute()
+    {
+        return $this->mission->name;
+	}
+
+    public function getMissionDescAttribute()
+    {
+        return $this->mission->description;
+    }
 }

@@ -23,9 +23,12 @@ class Mission extends Model
 
     protected $fillable = [
         'name','post_id','status','description','start_time','end_time',
-        'complete_time','amount','staff_id','upper'
+        'complete_time','amount','staff_id','upper','arithmetic','sustain'
     ];
 
+    protected $appends = [
+        'short_desc'
+    ];
     public function post()
     {
         return $this->belongsTo(Dict::class,'post_id');
@@ -36,6 +39,21 @@ class Mission extends Model
         return $this->belongsTo(Dict::class,'status');
     }
 
+    public function arithmeticDict()
+    {
+        return $this->belongsTo(Dict::class,'arithmetic');
+    }
+
+    public function getArithmeticNameAttribute()
+    {
+        return $this->arithmeticDict->name;
+    }
+    public function getShortDescAttribute()
+    {
+        if (strlen($this->attributes['description']) > 60)
+            return substr($this->attributes['description'],0,60).'..';
+        return $this->attributes['description'];
+    }
     public function getCompleteTimeAttribute()
     {
         if ( empty($this->attributes['complete_time']) )

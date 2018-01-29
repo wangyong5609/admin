@@ -8,14 +8,13 @@
         任务模板
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> 主页</a></li>
-        <li class="active"><a href="{{url('/admin/article/index')}}">任务模板 - 创建模板</a></li>
+        <li class="active">任务模板 - 新建模板</li>
     </ol>
 @stop
 @section('content')
 
 <div class = 'container'>
-    <h2 class="page-header">创建新模板</h2>
+    <h2 class="page-header">新建模板</h2>
     <form method="POST" action="{{url('/mission_template')}}" accept-charset="utf-8">
         {!! csrf_field() !!}
         <div class="nav-tabs-custom">

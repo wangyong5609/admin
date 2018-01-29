@@ -3,23 +3,21 @@
 @section('content-header')
     <h1>
         员工列表
-        <small>员工</small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> 主页</a></li>
         <li class="active">员工管理 - 员工列表</li>
     </ol>
 @stop
 
 @section('content')
-    <a href="{{url('staff/create')}}" class="btn btn-primary margin-bottom">添加新员工</a>
+    <a href="{{url('staff/create')}}" class="btn btn-primary margin-bottom">添加员工</a>
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">员工列表</h3>
             <div class="box-tools">
-                <form action="" method="get">
+                <form action="{{url('staff')}}" method="get">
                     <div class="input-group">
-                        <input type="text" class="form-control input-sm pull-right" name="s_title"
+                        <input type="text" class="form-control input-sm pull-right" name="name"
                                style="width: 150px;" placeholder="搜索员工姓名">
                         <div class="input-group-btn">
                             <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
@@ -29,7 +27,7 @@
             </div>
         </div>
         <div class="box-body table-responsive">
-            @if( isset($staffs))
+            @if( count($staffs))
             <table class="table table-hover table-bordered">
                 <thead>
                 <th>ID</th>
@@ -48,9 +46,9 @@
                         <td>{!!$staff->status_name!!}</td>
                         <td>{!!$staff->description!!}</td>
                         <td>
-                            <div class = 'row'>
-                                <a href = '#modal1' class = 'delete btn-floating modal-trigger red' data-link = "/staff/{!!$staff->id!!}/deleteMsg" ><i class = 'material-icons'>删除</i></a>
-                                <a href = "/staff/{!!$staff->id!!}/edit" class = 'viewEdit btn-floating blue' data-link = '/staff/{!!$staff->id!!}/edit'><i class = 'material-icons'>修改</i></a>
+                            <div>
+                                <a href = '{{url('/staff/'.$staff->id.'/edit')}}'>  修改</a>
+                                <a methods="delete" href = '{{url('/staff/'.$staff->id.'/delete')}}'>  删除</a>
                             </div>
                         </td>
                     </tr>
@@ -58,8 +56,9 @@
                 </tbody>
             </table>
             @else
-                <h1>暂无数据</h1>
+                <div class="empty-block">暂无数据 ~_~ </div>
             @endif
+            {{ $staffs->render() }}
         </div>
     </div>
 @stop

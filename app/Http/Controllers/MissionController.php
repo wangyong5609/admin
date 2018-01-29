@@ -29,9 +29,10 @@ class MissionController extends Controller
     {
         $title = 'Index - mission';
         $query = $this->applyFilters(Mission::query());
-        $missions = $query->paginate(20);
+        $missions = $query->paginate(2);
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
-        return view('mission.index',compact('missions','title','posts'));
+        $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
+        return view('mission.index',compact('missions','title','posts','status'));
     }
 
     /**
@@ -58,7 +59,7 @@ class MissionController extends Controller
      * @param    \Illuminate\Http\Request  $request
      * @return  \Illuminate\Http\Response
      */
-    public function store(MissionRequest $request)
+    public function store(Request $request)
     {
         $mission = new Mission();
 
@@ -91,6 +92,8 @@ class MissionController extends Controller
 
         
         $mission->upper = $request->upper;
+        $mission->arithmetic = $request->arithmetic;
+        $mission->sustain = $request->sustain;
 
         
         
@@ -153,25 +156,7 @@ class MissionController extends Controller
     {
         $mission = Mission::findOrfail($id);
     	
-        $mission->name = $request->name;
-        
-        $mission->post_id = $request->post_id;
-        
-        $mission->description = $request->description;
-        
-        $mission->status = $request->status;
-        
-        $mission->start_time = $request->start_time;
-        
-        $mission->end_time = $request->end_time;
-        
-        $mission->complete_time = $request->complete_time;
-        
-        $mission->amount = $request->amount;
-        
-        $mission->staff_id = $request->staff_id;
-        
-        $mission->upper = $request->upper;
+        $mission->fill($request->intersect(app(Mission::class)->getFillable()));
         
         
         $mission->save();
@@ -206,6 +191,6 @@ class MissionController extends Controller
     {
      	$mission = Mission::findOrfail($id);
      	$mission->delete();
-        return URL::to('mission');
+        return redirect('mission');
     }
 }

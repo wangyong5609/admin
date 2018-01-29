@@ -8,14 +8,13 @@
         员工
     </h1>
     <ol class="breadcrumb">
-        <li><a href="{{url('/dashboard')}}"><i class="fa fa-dashboard"></i> 主页</a></li>
         <li class="active">员工 - 添加员工</li>
     </ol>
 @stop
 @section('content')
 
     <div class = 'container'>
-        <h2 class="page-header">添加新员工</h2>
+        <h2 class="page-header">添加员工</h2>
         <form method="POST" action="{{url('/staff')}}" accept-charset="utf-8">
             {!! csrf_field() !!}
             <div class="nav-tabs-custom">

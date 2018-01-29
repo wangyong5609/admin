@@ -1,11 +1,18 @@
 @extends('admin.admin')
-@section('title','Edit')
+@section('content-header')
+    <h1>
+        员工
+    </h1>
+    <ol class="breadcrumb">
+        <li class="active">员工 - 员工列表 - 修改员工信息</li>
+    </ol>
+@stop
 
 @section('content')
 
     <div class = 'container'>
-        <h2 class="page-header">修改员工信息员工</h2>
-        <form method="POST" action="{{url('/staff')}}" accept-charset="utf-8">
+        <h2 class="page-header">修改员工信息</h2>
+        <form method="POST" action="{{url('staff/'.$staff->id.'/update')}}" accept-charset="utf-8">
             {!! csrf_field() !!}
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
@@ -26,7 +33,7 @@
                             <label>员工岗位
                                 <small class="text-red">*</small>
                             </label>
-                            <select id="post" name = "post" class="js-example-placeholder-single form-control" >
+                            <select required="required" id="post" name = "post" class="js-example-placeholder-single form-control" >
                                 @foreach($posts as $post)
                                     <option @if($staff->post_name == $post->name) selected = "selected" @endif value="{{$post->id}}">{{$post->name}}</option>
                                 @endforeach
@@ -36,7 +43,7 @@
                             <label>员工状态
                                 <small class="text-red">*</small>
                             </label>
-                            <select id="status" name = "status" class="js-example-placeholder-single form-control">
+                            <select required="required" id="status" name = "status" class="js-example-placeholder-single form-control">
                                 @foreach($status as $dict)
                                     <option @if($staff->status_name == $dict->name) selected = "selected"@endif value="{{$dict->id}}">{{$dict->name}}</option>
                                 @endforeach
@@ -46,7 +53,7 @@
                             <label>描述
                             </label>
                             <input  id="description" name = "description" type="text" class="form-control"  autocomplete="off"
-                                    placeholder="描述" maxlength="80">
+                                    placeholder="描述" maxlength="80" value="{{$staff->description}}">
                         </div>
 
                     </div>

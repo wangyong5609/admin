@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dict;
 use App\Enums\DictTypes;
+use App\Helper\Util;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,6 +20,7 @@ use URL;
  */
 class StaffController extends Controller
 {
+    use  Util;
     /**
      * Display a listing of the resource.
      *
@@ -27,7 +29,8 @@ class StaffController extends Controller
     public function index()
     {
         $title = 'Index - staff';
-        $staffs = Staff::paginate(6);
+        $query = $this->applyFilters(Staff::query());
+        $staffs = $query->paginate(6);
         return view('staff.index',compact('staffs','title'));
     }
 
@@ -57,8 +60,7 @@ class StaffController extends Controller
 
         $staff->save();
 
-        $staffs = Staff::paginate(6);
-        return view('staff.index',compact('staffs'));
+        return redirect('staff');
     }
 
     /**
@@ -112,13 +114,8 @@ class StaffController extends Controller
     public function update($id,Request $request)
     {
         $staff = Staff::findOrfail($id);
-    	
-        $staff->name = $request->name;
-        
-        $staff->birthday = $request->birthday;
-        
-        $staff->phone = $request->phone;
-        
+
+        $staff->fill($request->intersect(app(Staff::class)->getFillable()));
         
         $staff->save();
 
@@ -152,6 +149,6 @@ class StaffController extends Controller
     {
      	$staff = Staff::findOrfail($id);
      	$staff->delete();
-        return URL::to('staff');
+        return redirect('staff');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dict;
 use App\Enums\DictTypes;
+use App\Helper\Util;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,6 +20,7 @@ use URL;
  */
 class Mission_templateController extends Controller
 {
+    use Util;
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +28,8 @@ class Mission_templateController extends Controller
      */
     public function index()
     {
-        $templates = Mission_template::paginate(6);
+        $query = $this->applyFilters(Mission_template::query());
+        $templates = $query->paginate(6);
         return view('mission_template.index',compact('templates'));
     }
 
@@ -112,9 +115,10 @@ class Mission_templateController extends Controller
             return URL::to('mission_template/'. $id . '/edit');
         }
 
-        
-        $mission_template = Mission_template::findOrfail($id);
-        return view('mission_template.edit',compact('title','mission_template'  ));
+        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
+        $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
+        $template = Mission_template::findOrfail($id);
+        return view('mission_template.edit',compact('title','template' ,'posts','arithmetic' ));
     }
 
     /**
@@ -127,18 +131,8 @@ class Mission_templateController extends Controller
     public function update($id,Request $request)
     {
         $mission_template = Mission_template::findOrfail($id);
-    	
-        $mission_template->name = $request->name;
-        
-        $mission_template->post_id = $request->post_id;
-        
-        $mission_template->description = $request->description;
-        
-        $mission_template->upper = $request->upper;
-        
-        $mission_template->sustain = $request->sustain;
-        
-        $mission_template->arithmetic = $request->arithmetic;
+
+        $mission_template->fill($request->intersect(app(Mission_template::class)->getFillable()));
         
         
         $mission_template->save();
@@ -173,6 +167,6 @@ class Mission_templateController extends Controller
     {
      	$mission_template = Mission_template::findOrfail($id);
      	$mission_template->delete();
-        return URL::to('mission_template');
+        return redirect('mission_template');
     }
 }

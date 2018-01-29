@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Mission;
+use App\Observers\MissionObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         \Schema::defaultStringLength(191);
-        Mission::observe(\MissionObserver::class);
+        Mission::observe(MissionObserver::class);
     }
 
     /**

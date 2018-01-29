@@ -12,7 +12,7 @@
 
     <div class = 'container'>
         <h2 class="page-header">修改任务信息</h2>
-        <form method="put" action="{{url('/mission/'.$mission->id)}}" accept-charset="utf-8">
+        <form method="post" action="{{url('mission/'.$mission->id.'/update')}}" accept-charset="utf-8">
             {!! csrf_field() !!}
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
@@ -53,7 +53,7 @@
                             <label>任务描述
                             </label>
                             <input  id="description" name = "description" type="text" class="form-control"  autocomplete="off"
-                                    placeholder="任务描述" maxlength="80">
+                                    placeholder="任务描述" maxlength="80" value="{{$mission->description}}">
                         </div>
                         <div class="form-group">
                             <label>起始时间
@@ -70,22 +70,22 @@
                         <div class="form-group">
                             <label>任务量
                             </label>
-                            <input  id="amount" name = "amount" type="number" class="form-control"  autocomplete="off"
-                                    placeholder="任务量" maxlength="80">
+                            <input  id="amount" name = "amount" @if(empty($mission->staff_id)) type="number" @else type="hidden" @endif class="form-control"  autocomplete="off"
+                                    placeholder="任务量"  value="{{$mission->amount}}">
                         </div>
                         <div class="form-group">
                             <label>任务上限
                                 <small class="text-red">*</small>
                             </label>
-                            <input required="required" id="upper" name = "upper"type="number" class="form-control"  autocomplete="off"
-                                   placeholder="任务上限" maxlength="80">
+                            <input required="required" id="upper" name = "upper" @if(empty($mission->staff_id)) type="number" @else type="hidden" @endif  class="form-control"  autocomplete="off"
+                                   placeholder="任务上限" maxlength="80" value="{{$mission->upper}}">
                         </div>
                         <div class="form-group">
                             <label>持续时间
                                 <small class="text-red">*</small>
                             </label>
                             <input required="required" id="sustain" name = "sustain" type="text" class="form-control"  autocomplete="off"
-                                   placeholder="持续时间" maxlength="80">
+                                   placeholder="持续时间" maxlength="80" value="{{$mission->sustain}}">
                         </div>
                         <div class="form-group">
                             <label>时间算法
@@ -93,7 +93,7 @@
                             </label>
                             <select id="arithmetic" name = "arithmetic" class="js-example-placeholder-single form-control">
                                 @foreach($arithmetic as $dict)
-                                    <option value="{{$dict->id}}">{{$dict->name}}</option>
+                                    <option @if($mission->arithmetic == $dict->id) selected = "selected"@endif value="{{$dict->id}}">{{$dict->name}}</option>
                                 @endforeach
                             </select>
                         </div>

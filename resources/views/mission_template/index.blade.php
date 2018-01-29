@@ -14,9 +14,9 @@
         <div class="box-header with-border">
             <h3 class="box-title">模板列表</h3>
             <div class="box-tools">
-                <form action="" method="get">
+                <form action="{{url('mission_template')}}" method="get">
                     <div class="input-group">
-                        <input type="text" class="form-control input-sm pull-right" name="s_title"
+                        <input type="text" class="form-control input-sm pull-right" name="name"
                                style="width: 150px;" placeholder="搜索模板名称">
                         <div class="input-group-btn">
                             <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="box-body table-responsive">
-            @if( isset($templates))
+            @if( count($templates))
                 <table class="table table-hover table-bordered">
                     <thead>
                     <th>ID</th>
@@ -47,11 +47,11 @@
                             <td>{!!$template->description!!}</td>
                             <td>{!!$template->upper!!}</td>
                             <td>{!!$template->sustain!!}天</td>
-                            <td>{!!$template->arithmetic!!}天</td>
+                            <td>{!!$template->arithmetic_name!!}</td>
                             <td>
                                 <div class = ''>
-                                    <a href = '#modal1' > 修改 </a>
-                                    <a href = '#'> 删除 </a>
+                                    <a href = '{{url('/mission_template/'.$template->id.'/edit')}}'>  修改</a>
+                                    <a methods="delete" href = '{{url('/mission_template/'.$template->id.'/delete')}}'>  删除</a>
                                 </div>
                             </td>
                         </tr>
@@ -59,8 +59,9 @@
                     </tbody>
                 </table>
             @else
-                <h1>暂无数据</h1>
+                <div class="empty-block">暂无数据 ~_~ </div>
             @endif
+            {{ $templates->render() }}
         </div>
     </div>
 @stop

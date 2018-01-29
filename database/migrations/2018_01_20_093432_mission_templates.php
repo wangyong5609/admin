@@ -32,7 +32,7 @@ class MissionTemplates extends Migration
         
         $table->float('sustain');
         
-        $table->float('arithmetic');
+        $table->integer('arithmetic');
         
         /**
          * Foreignkeys section

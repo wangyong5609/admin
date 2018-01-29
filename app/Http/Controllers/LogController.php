@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Util;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,16 +18,22 @@ use URL;
  */
 class LogController extends Controller
 {
+    use Util;
     /**
      * Display a listing of the resource.
      *
      * @return  \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $title = 'Index - log';
-        $logs = Log::paginate(6);
-        return view('log.index',compact('logs','title'));
+        $mission_name = $request->get('mission_name');
+        if ($mission_name)
+            $logs = Log::whereHas('mission', function ($query)use($mission_name) {
+                $query->where('name', 'like', "%$mission_name%");
+            })->paginate(6);
+        else
+            $logs = Log::paginate(6);
+        return view('log.index',compact('logs'));
     }
 
     /**
