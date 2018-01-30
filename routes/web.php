@@ -30,6 +30,8 @@ Route::group(['middleware'=> 'web'],function(){
     Route::resource('mission','\App\Http\Controllers\MissionController');
     Route::post('mission/{id}/update','\App\Http\Controllers\MissionController@update');
     Route::get('mission/{id}/delete','\App\Http\Controllers\MissionController@destroy');
+    Route::get('mission/{id}/assign','\App\Http\Controllers\MissionController@assign');//指派
+    Route::get('mission/{id}/division','\App\Http\Controllers\MissionController@division');//分割
     Route::get('mission/{id}/deleteMsg','\App\Http\Controllers\MissionController@DeleteMsg');
 });
 Route::get('choose','\App\Http\Controllers\MissionController@choose');
@@ -48,3 +50,5 @@ Route::group(['middleware'=> 'web'],function(){
     Route::get('log/{id}/delete','\App\Http\Controllers\LogController@destroy');
     Route::get('log/{id}/deleteMsg','\App\Http\Controllers\LogController@DeleteMsg');
 });
+
+Route::get('test','\App\Http\Controllers\TestController@test');

@@ -45,7 +45,11 @@ class Missions extends Migration
         $table->float('sustain');
 
         $table->integer('arithmetic');
-        
+
+        $table->boolean('show')->default(true);
+
+        $table->integer('parent_id')->nullable();
+
         /**
          * Foreignkeys section
          */

@@ -8,14 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     @section('head-css')
+
         <link href="//cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.css" rel="stylesheet">
         <link href="//cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
-        {{--<link href="{{resource_path('assets/css/bootstrap.min.css')}}" rel="stylesheet">?--}}
         <link rel="stylesheet" href="{{url('dist/css/AdminLTE.css')}}">
         <link rel="stylesheet" href="{{url('dist/css/skins/_all-skins.min.css')}}">
 
-        <!-- Styles -->
-        <link href="{{ asset('js/app.js') }}" rel="stylesheet">
     @show
 
 

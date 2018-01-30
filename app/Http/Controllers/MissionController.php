@@ -7,6 +7,7 @@ use App\Enums\DictTypes;
 use App\Http\Requests\MissionRequest;
 use App\Mission_template;
 use App\Helper\Util;
+use App\Staff;
 use Illuminate\Http\Request;
 use App\Mission;
 use URL;
@@ -29,7 +30,7 @@ class MissionController extends Controller
     {
         $title = 'Index - mission';
         $query = $this->applyFilters(Mission::query());
-        $missions = $query->paginate(2);
+        $missions = $query->where('show',true)->paginate(2);
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
         return view('mission.index',compact('missions','title','posts','status'));
@@ -52,6 +53,20 @@ class MissionController extends Controller
     {
         $templates = Mission_template::paginate(6);
         return view('mission_template.choose',compact('templates'));
+    }
+
+
+
+    public function assign($id)
+    {
+        $mission = Mission::findOrfail($id);
+        $staffs = Staff::paginate(6);
+        return view('mission.assign',compact('mission','staffs'));
+    }
+
+    public function division(Request $request)
+    {
+
     }
     /**
      * Store a newly created resource in storage.

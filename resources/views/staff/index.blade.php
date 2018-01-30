@@ -30,7 +30,7 @@
             @if( count($staffs))
             <table class="table table-hover table-bordered">
                 <thead>
-                <th>ID</th>
+                <th >ID</th>
                 <th>姓名</th>
                 <th>岗位</th>
                 <th>状态</th>
