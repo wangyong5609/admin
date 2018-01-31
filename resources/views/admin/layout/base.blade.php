@@ -6,6 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta id="token" name="token" value="{{csrf_token()}}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        @section('title')
+        @show
+    </title>
 
     @section('head-css')
 

@@ -30,7 +30,7 @@ class MissionController extends Controller
     {
         $title = 'Index - mission';
         $query = $this->applyFilters(Mission::query());
-        $missions = $query->where('show',true)->paginate(2);
+        $missions = $query->where('show',true)->paginate($this->pageNumber());
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
         return view('mission.index',compact('missions','title','posts','status'));
@@ -51,7 +51,7 @@ class MissionController extends Controller
 
     public function choose()
     {
-        $templates = Mission_template::paginate(6);
+        $templates = Mission_template::paginate($this->pageNumber());
         return view('mission_template.choose',compact('templates'));
     }
 
@@ -62,17 +62,35 @@ class MissionController extends Controller
         $mission = Mission::findOrfail($id);
         $query = Staff::query()->where('post',$mission->post_id);
         $query->orderBy('status')->orderBy('mission_status');
-        $staffs = $query->paginate(6);
+        $staffs = $query->paginate($this->pageNumber());
         return view('mission.assign',compact('mission','staffs'));
     }
 
-    public function division(Request $request,Mission $mission)
+    public function division(Request $request,$id)
     {
+        $mission = Mission::findOrFail($id);
         $data = $request->get('data');
-        info($data);
         if (empty($data))
             return ['code' => 400,'data' => '未选择任务分配成员'];
-        return $request->all();
+        $sum = 0;
+        foreach ($data as $datum){
+            $amount = $datum['amount'];
+            $sum += $amount;
+            if ( $amount > $mission->upper)
+                return ['code' => 400,'data' => '任务量高于任务上限'];
+            if (count($data) == 1 && $amount == $mission->amount){
+                //如果仅把此任务分配给了一个人
+                $mission->fill(collect($datum)->intersect(app(Mission::class)->getFillable()));//todo
+                $mission->save();
+            }else{
+                $insert = array_merge($mission->getAttributes(),$datum);
+                unset($insert['id']);
+                $insert['status'] = Dict::ofCode('doing')->first()->id;
+                $insert['parent_id'] = $mission->id;
+                Mission::insert($insert);
+            }
+        }
+
     }
     /**
      * Store a newly created resource in storage.

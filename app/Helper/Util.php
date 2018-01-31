@@ -28,4 +28,9 @@ trait Util
 
         return $query;
     }
+
+    public function pageNumber()
+    {
+        return 10;
+    }
 }

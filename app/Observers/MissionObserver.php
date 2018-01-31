@@ -64,12 +64,22 @@ class MissionObserver
                         break;
                     case 'staff_id':
                         $project = empty($origin->$field) ? '指派' : '改派';
-                        if ($origin->$field){
-                            $staff = Staff::find($origin->$field);
-                            $staff->mission_status = Dict::where('code','no_mission')->first()->id;
-                            $staff->save();
-                        }
 
+
+                        if ($origin->$field){
+                            //原员工正在进行的任务数量
+                            $mission_sum = Mission::where('staff_id',$origin->$field )->whereNotNull('complete_time')->count();
+                            if ($mission_sum == 1){
+                                $staff = Staff::find($origin->$field);
+                                //修改员工的任务状态为无任务
+                                $staff->mission_status = Dict::where('code','no_mission')->first()->id;
+                                $staff->save();
+                            }
+                        }
+                        $staff = Staff::find($mission->$field);
+                        //修改员工的任务状态为任务中
+                        $staff->mission_status = Dict::where('code','missioning')->first()->id;
+                        $staff->save();
                         break;
                     case 'upper':
                         $project = '任务上限';

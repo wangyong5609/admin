@@ -70,14 +70,14 @@
                         <div class="form-group">
                             <label>任务量
                             </label>
-                            <input  id="amount" name = "amount" @if(empty($mission->staff_id)) type="number" @else type="hidden" @endif class="form-control"  autocomplete="off"
+                            <input  id="amount" name = "amount" type="number" @if(!empty($mission->staff_id)) disabled="disabled" @endif class="form-control"  autocomplete="off"
                                     placeholder="任务量"  value="{{$mission->amount}}">
                         </div>
                         <div class="form-group">
                             <label>任务上限
                                 <small class="text-red">*</small>
                             </label>
-                            <input required="required" id="upper" name = "upper" @if(empty($mission->staff_id)) type="number" @else type="hidden" @endif  class="form-control"  autocomplete="off"
+                            <input required="required" id="upper" name = "upper" type="number"  @if(! empty($mission->staff_id))  disabled="disabled" @endif  class="form-control"  autocomplete="off"
                                    placeholder="任务上限" maxlength="80" value="{{$mission->upper}}">
                         </div>
                         <div class="form-group">
