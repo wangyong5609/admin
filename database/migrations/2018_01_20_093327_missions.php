@@ -26,7 +26,7 @@ class Missions extends Migration
         
         $table->integer('post_id');
         
-        $table->String('description');
+        $table->String('description')->nullable();
         
         $table->integer('status')->comment('任务状态');
         

@@ -46,6 +46,13 @@ class DictsTableSeeder extends Seeder
                     '批量' => 'batch',
                 ],
             ],
+            [
+                'type' => \App\Enums\DictTypes::STAFF_MISSION_STATUS,
+                'items' => [
+                    '无任务' => 'no_mission',
+                    '任务中' => 'missioning',
+                ],
+            ],
         ];
         foreach ($dicts as $dict) {
             foreach ($dict['items'] as $name => $code) {

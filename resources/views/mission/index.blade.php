@@ -62,6 +62,7 @@
                     <th>实际完成时间</th>
                     <th>任务量</th>
                     <th>所属人员</th>
+                    <th>上限</th>
                     <th>持续时间</th>
                     <th>算法</th>
                     <th>操作</th>
@@ -79,6 +80,7 @@
                             <td>{!!$mission->complete_time!!}</td>
                             <td>{!!$mission->amount!!}</td>
                             <td>{!!$mission->staff_name!!}</td>
+                            <td>{!!$mission->upper!!}</td>
                             <td>{!!$mission->sustain!!}</td>
                             <td>{!!$mission->arithmetic_name!!}</td>
                             <td>

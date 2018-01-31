@@ -60,13 +60,19 @@ class MissionController extends Controller
     public function assign($id)
     {
         $mission = Mission::findOrfail($id);
-        $staffs = Staff::paginate(6);
+        $query = Staff::query()->where('post',$mission->post_id);
+        $query->orderBy('status')->orderBy('mission_status');
+        $staffs = $query->paginate(6);
         return view('mission.assign',compact('mission','staffs'));
     }
 
-    public function division(Request $request)
+    public function division(Request $request,Mission $mission)
     {
-
+        $data = $request->get('data');
+        info($data);
+        if (empty($data))
+            return ['code' => 400,'data' => '未选择任务分配成员'];
+        return $request->all();
     }
     /**
      * Store a newly created resource in storage.

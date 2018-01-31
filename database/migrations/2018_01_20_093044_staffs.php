@@ -29,6 +29,8 @@ class Staffs extends Migration
         
         $table->String('status');
 
+        $table->String('mission_status')->nullable();
+
         $table->String('description')->nullable();
 
         /**

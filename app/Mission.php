@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -44,6 +45,26 @@ class Mission extends Model
         return $this->belongsTo(Dict::class,'arithmetic');
     }
 
+    /**
+     * 任务周期
+     * @return float
+     */
+    public function getLifeAttribute()
+    {
+        $date = floor((strtotime($this->attributes['end_time'])-strtotime($this->attributes['start_time']))/86400);
+        return $date;
+    }
+
+    /**
+     * 已用时间
+     * @return float
+     */
+    public function getConsumingAttribute()
+    {
+        $date = floor((Carbon::now()->timestamp - strtotime($this->attributes['start_time']))/86400);
+        return $date;
+    }
+    
     public function getArithmeticNameAttribute()
     {
         return $this->arithmeticDict->name;

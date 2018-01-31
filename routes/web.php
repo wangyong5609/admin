@@ -31,7 +31,7 @@ Route::group(['middleware'=> 'web'],function(){
     Route::post('mission/{id}/update','\App\Http\Controllers\MissionController@update');
     Route::get('mission/{id}/delete','\App\Http\Controllers\MissionController@destroy');
     Route::get('mission/{id}/assign','\App\Http\Controllers\MissionController@assign');//指派
-    Route::get('mission/{id}/division','\App\Http\Controllers\MissionController@division');//分割
+    Route::post('mission/{id}/division','\App\Http\Controllers\MissionController@division');//分割
     Route::get('mission/{id}/deleteMsg','\App\Http\Controllers\MissionController@DeleteMsg');
 });
 Route::get('choose','\App\Http\Controllers\MissionController@choose');

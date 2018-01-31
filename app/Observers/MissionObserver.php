@@ -11,6 +11,7 @@ namespace App\Observers;
 use App\Dict;
 use App\Log;
 use App\Mission;
+use App\Staff;
 use Carbon\Carbon;
 
 class MissionObserver
@@ -52,12 +53,23 @@ class MissionObserver
                         break;
                     case 'complete_time':
                         $project = '实际完成时间';
+                        if ($origin->staff_id){
+                            $staff = Staff::find($origin->staff_id);
+                            $staff->mission_status = Dict::where('code','no_mission')->first()->id;
+                            $staff->save();
+                        }
                         break;
                     case 'amount':
                         $project = '任务量';
                         break;
                     case 'staff_id':
                         $project = empty($origin->$field) ? '指派' : '改派';
+                        if ($origin->$field){
+                            $staff = Staff::find($origin->$field);
+                            $staff->mission_status = Dict::where('code','no_mission')->first()->id;
+                            $staff->save();
+                        }
+
                         break;
                     case 'upper':
                         $project = '任务上限';

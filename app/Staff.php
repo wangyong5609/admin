@@ -46,5 +46,8 @@ class Staff extends Model
     {
         return $this->belongsTo(Dict::class,'status');
     }
-
+    public function missionStatusDict()
+    {
+        return $this->belongsTo(Dict::class,'mission_status');
+    }
 }
