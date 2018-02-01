@@ -1,3 +1,9 @@
+## 效果图(部分)
+### 任务列表
+![image](https://github.com/wangyong5609/admin/tree/master/public/images/view1.png)
+### 当前状态
+![image](https://github.com/wangyong5609/admin/tree/master/public/images/view2.png)
+
 
 ## 安装
 ### 1.clone到本地
