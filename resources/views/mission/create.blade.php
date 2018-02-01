@@ -78,10 +78,11 @@
                         </div>
                         <div class="form-group">
                             <label>持续时间
-                                <small class="text-red">*</small>
+                                <small class="text-red">*</small> <i title="请填写0.5的倍数 ( 如：0.5,1,1.5)" class=" fa fa-question-circle-o"></i>
                             </label>
                             <input required="required" id="sustain" name = "sustain" type="text" class="form-control"  autocomplete="off"
                                    placeholder="持续时间"  value="@if(isset($tem)){{$tem->sustain}}@endif ">
+
                         </div>
                         <div class="form-group">
                             <label>时间算法
