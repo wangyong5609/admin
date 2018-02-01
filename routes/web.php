@@ -54,3 +54,4 @@ Route::group(['middleware'=> 'web'],function(){
 
 
 Route::get('home','\App\Http\Controllers\HomeController@home');
+Route::get('/','\App\Http\Controllers\HomeController@home');
