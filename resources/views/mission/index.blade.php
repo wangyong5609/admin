@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','任务列表')
 @section('content-header')
     <h1>
         任务
@@ -86,10 +87,12 @@
                             <td>
                                 <div>
                                     <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
-                                    <a href = '{{url('/mission/'.$mission->id.'/assign')}}'>
-                                        @if($mission->staff_id)  改派 @else 指派 @endif
 
-                                    </a>
+                                    @if(! $mission->staff_id)
+                                        <a href = '{{url('/mission/'.$mission->id.'/assign')}}'>自动分配</a>
+                                    @endif
+
+
                                     @if(empty($mission->staff_id))
                                         <a methods="delete" href = '{{url('/mission/'.$mission->id.'/delete')}}'>  删除</a>
                                     @endif

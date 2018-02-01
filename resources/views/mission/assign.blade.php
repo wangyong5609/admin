@@ -154,6 +154,8 @@
         }, function(res) {
             if (res.code == 400){
                 alert(res.data)
+            }else{
+                window.location.replace(res);
             }
         })
     }

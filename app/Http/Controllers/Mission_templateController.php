@@ -29,7 +29,7 @@ class Mission_templateController extends Controller
     public function index()
     {
         $query = $this->applyFilters(Mission_template::query());
-        $templates = $query->paginate(6);
+        $templates = $query->paginate($this->pageNumber());
         return view('mission_template.index',compact('templates'));
     }
 
@@ -77,7 +77,7 @@ class Mission_templateController extends Controller
         
         
         $mission_template->save();
-        $templates = Mission_template::paginate(6);
+        $templates = Mission_template::paginate($this->pageNumber());
         return view('mission_template.index',compact('templates'));
     }
 

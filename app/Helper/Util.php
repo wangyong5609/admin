@@ -9,6 +9,7 @@
 namespace App\Helper;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 trait Util
 {
@@ -31,6 +32,20 @@ trait Util
 
     public function pageNumber()
     {
-        return 10;
+        return 15;
+    }
+
+    public static function getSeriesNumber($number, $length = 4, $padding = '0')
+    {
+        $format = '%\'' . $padding . $length . 'd';
+
+        return sprintf($format, intval($number));
+    }
+
+    public function getMissionName($name)
+    {
+        if (Str::contains($name,'-'));
+            $name = explode('-',$name)[0];
+        return $name.'-'.self::getSeriesNumber(rand(1,1000));
     }
 }

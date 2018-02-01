@@ -72,7 +72,7 @@ class Mission extends Model
     public function getShortDescAttribute()
     {
         if (strlen($this->attributes['description']) > 60)
-            return substr($this->attributes['description'],0,60).'..';
+            return str_limit($this->attributes['description'],60);
         return $this->attributes['description'];
     }
     public function getCompleteTimeAttribute()
@@ -101,5 +101,10 @@ class Mission extends Model
     public function getStatusNameAttribute()
     {
         return $this->statusDict->name;
+    }
+
+    public function scopeShow($query)
+    {
+        return $query->where('show',true)->whereNotIn('status',Dict::whereIn('code',['close'])->get()->pluck('id'));
     }
 }

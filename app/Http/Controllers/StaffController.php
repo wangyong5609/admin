@@ -30,7 +30,7 @@ class StaffController extends Controller
     {
         $title = 'Index - staff';
         $query = $this->applyFilters(Staff::query());
-        $staffs = $query->paginate(6);
+        $staffs = $query->paginate($this->pageNumber());
         return view('staff.index',compact('staffs','title'));
     }
 

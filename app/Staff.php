@@ -25,7 +25,7 @@ class Staff extends Model
     protected $table = 'staffs';
 
     protected $appends = [
-        'post_name','status_name','last_mission_start','last_mission_end'
+        'post_name','status_name','last_mission_start','last_mission_end','doing_mission'
     ];
 
     public function getPostNameAttribute()
@@ -44,7 +44,7 @@ class Staff extends Model
 
     public function getLastMissionStartAttribute()
     {
-        $mission = Mission::where('staff_id',$this->attributes['id'])->orderBy('updated_at','desc')->first();
+        $mission = Mission::where('staff_id',$this->attributes['id'])->whereNotNull('complete_time')->orderBy('updated_at','desc')->first();
 
         return empty($mission) ?  '无' : $mission->start_time;
 
@@ -52,9 +52,9 @@ class Staff extends Model
 
     public function getLastMissionEndAttribute()
     {
-        $mission = Mission::where('staff_id',$this->attributes['id'])->orderBy('updated_at','desc')->first();
+        $mission = Mission::where('staff_id',$this->attributes['id'])->whereNotNull('complete_time')->orderBy('updated_at','desc')->first();
 
-        return empty($mission) ?  '无' : $mission->end_time;
+        return empty($mission) ?  '无' : $mission->complete_time;
 
     }
     public function postDict()
@@ -69,5 +69,15 @@ class Staff extends Model
     public function missionStatusDict()
     {
         return $this->belongsTo(Dict::class,'mission_status');
+    }
+
+    public function missions()
+    {
+        return $this->hasMany(Mission::class,'staff_id');
+    }
+
+    public function getDoingMissionAttribute()
+    {
+        return $this->missions()->whereNull('complete_time')->orderBy('updated_at','desc')->first();
     }
 }

@@ -30,9 +30,9 @@ class LogController extends Controller
         if ($mission_name)
             $logs = Log::whereHas('mission', function ($query)use($mission_name) {
                 $query->where('name', 'like', "%$mission_name%");
-            })->paginate(6);
+            })->paginate($this->pageNumber());
         else
-            $logs = Log::paginate(6);
+            $logs = Log::paginate($this->pageNumber());
         return view('log.index',compact('logs'));
     }
 

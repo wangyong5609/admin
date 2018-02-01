@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','修改员工信息')
 @section('content-header')
     <h1>
         员工

@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','修改任务模板')
 @section('content-header')
     <h1>
         任务模板

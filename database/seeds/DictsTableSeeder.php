@@ -37,6 +37,7 @@ class DictsTableSeeder extends Seeder
                     '正在进行' => 'doing',
                     '排除等待' => 'wait',
                     '已经完成' => 'complete',
+                    '关闭' => 'close',
                 ],
             ],
             [

@@ -30,7 +30,7 @@ class MissionController extends Controller
     {
         $title = 'Index - mission';
         $query = $this->applyFilters(Mission::query());
-        $missions = $query->where('show',true)->paginate($this->pageNumber());
+        $missions = $query->show()->orderBy('status')->orderBy('created_at','desc')->paginate($this->pageNumber());
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
         return view('mission.index',compact('missions','title','posts','status'));
@@ -41,11 +41,13 @@ class MissionController extends Controller
      *
      * @return  \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id = null)
     {
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
-        return view('mission.create',compact('posts','arithmetic'));
+        $id && $tem = Mission_template::findOrFail($id);
+
+        return view('mission.create',compact('posts','arithmetic','tem'));
     }
 
 
@@ -66,31 +68,67 @@ class MissionController extends Controller
         return view('mission.assign',compact('mission','staffs'));
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @param data
+     * @param data[amount]
+     * @param data[staff_id]
+     * @param data[start_time]
+     * @param data[end_time]
+     * @return array
+     */
     public function division(Request $request,$id)
     {
         $mission = Mission::findOrFail($id);
         $data = $request->get('data');
         if (empty($data))
             return ['code' => 400,'data' => '未选择任务分配成员'];
-        $sum = 0;
+        $sum = collect($data)->sum('amount');
+        if ($sum > $mission->amount)
+            return ['code' => 400,'data' => '任务分配总量高于任务量'];
+
         foreach ($data as $datum){
             $amount = $datum['amount'];
-            $sum += $amount;
             if ( $amount > $mission->upper)
                 return ['code' => 400,'data' => '任务量高于任务上限'];
             if (count($data) == 1 && $amount == $mission->amount){
                 //如果仅把此任务分配给了一个人
-                $mission->fill(collect($datum)->intersect(app(Mission::class)->getFillable()));//todo
-                $mission->save();
+                $mission->update(collect($datum)->intersect($mission->getFillable())->toArray());
             }else{
+                //分割任务
                 $insert = array_merge($mission->getAttributes(),$datum);
                 unset($insert['id']);
                 $insert['status'] = Dict::ofCode('doing')->first()->id;
+                $insert['name'] = $this->getMissionName($mission->name);
                 $insert['parent_id'] = $mission->id;
                 Mission::insert($insert);
+
+                $staff = Staff::find($datum['staff_id']);
+                //修改员工的任务状态为任务中
+                $staff->mission_status = Dict::where('code','missioning')->first()->id;
+                $staff->save();
             }
         }
 
+        if ($sum < $mission->amount){
+            //任务量有剩余
+            $insert = array_merge($mission->getAttributes(),[
+                'parent_id' => $mission->id,
+                'amount' => $mission->amount - $sum,
+                'upper' => ($mission->amount - $sum) > $mission->upper ? $mission->upper : $mission->amount - $sum,
+                'name' => $this->getMissionName($mission->name)
+            ]);
+            unset($insert['id']);
+            Mission::insert($insert);
+        }
+
+        if (! (count($data) == 1 && $sum == $mission->amount)) {
+            //修改原任务
+            $mission->status = Dict::ofCode('close')->first()->id;
+            $mission->save();
+        }
+        return url("mission");
     }
     /**
      * Store a newly created resource in storage.
@@ -179,9 +217,13 @@ class MissionController extends Controller
         
         $mission = Mission::findOrfail($id);
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
-        $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
+        $status = Dict::where('type',DictTypes::MISSION_STATUS)->where('code','!=','close')->get();
         $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
-        return view('mission.edit',compact('title','mission','posts','status','arithmetic'  ));
+        $staffs = Staff::where('post',$mission->post_id)
+            ->where('mission_status',Dict::ofCode('no_mission')->first()->id)
+            ->where('status',Dict::ofCode('work')->first()->id)
+            ->get();
+        return view('mission.edit',compact('title','mission','posts','status','arithmetic','staffs'  ));
     }
 
     /**

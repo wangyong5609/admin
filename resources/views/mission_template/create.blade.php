@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','新建模板')
 @section('other-css')
     {!! editor_css() !!}
     <link href="//cdn.bootcss.com/select2/4.0.3/css/select2.min.css" rel="stylesheet">
@@ -46,7 +47,7 @@
                         <label>任务描述
                         </label>
                         <input  id="description" name = "description" type="text" class="form-control"  autocomplete="off"
-                               placeholder="任务描述" maxlength="80">
+                               placeholder="任务描述" maxlength="120">
                     </div>
                     <div class="form-group">
                         <label>任务上限
@@ -59,7 +60,7 @@
                         <label>持续时间
                             <small class="text-red">*</small>
                         </label>
-                        <input required="required" id="sustain" name = "sustain" type="number" class="form-control"  autocomplete="off"
+                        <input required="required" id="sustain" name = "sustain"  class="form-control"  autocomplete="off"
                                placeholder="持续时间" maxlength="80">
                     </div>
                     <div class="form-group">

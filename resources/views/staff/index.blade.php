@@ -1,5 +1,5 @@
 @extends('admin.admin')
-@section('title','Index')
+@section('title','员工列表')
 @section('content-header')
     <h1>
         员工列表

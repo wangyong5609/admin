@@ -9,13 +9,25 @@
 namespace App\Observers;
 
 use App\Dict;
+use App\Helper\Util;
 use App\Log;
 use App\Mission;
 use App\Staff;
 use Carbon\Carbon;
+use Faker\Generator;
+use Illuminate\Support\Facades\Event;
 
 class MissionObserver
 {
+
+    use Util;
+
+    public function created(Mission $mission)
+    {
+        Event::fake();
+        $mission->name = $this->getMissionName($mission->name);
+        $mission->save();
+    }
 
     public function updating(Mission $mission)
     {

@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','修改任务')
 @section('content-header')
     <h1>
         任务
@@ -67,12 +68,39 @@
                             <input  id="end_time" name = "end_time" type="date" required="required" class="form-control"  autocomplete="off"
                                     value="{!!$mission->end_time!!}" placeholder="结束时间" maxlength="80">
                         </div>
+                        @if($mission->staff_id)
+                            <div class="form-group">
+                                <label>实际完成时间
+                                </label>
+                                <input  id="complete_time" name = "complete_time" type="date" class="form-control"  autocomplete="off"
+                                        value="{!!$mission->complete_time!!}" placeholder="实际完成时间">
+                            </div>
+                        @endif
                         <div class="form-group">
                             <label>任务量
                             </label>
                             <input  id="amount" name = "amount" type="number" @if(!empty($mission->staff_id)) disabled="disabled" @endif class="form-control"  autocomplete="off"
                                     placeholder="任务量"  value="{{$mission->amount}}">
                         </div>
+                        <div class="form-group">
+                            <label>所属人员
+                            </label>
+                            @if($mission->staff_id)
+                                @if(count($staffs))
+                                <select required="required" id="staff_id" name = "staff_id" class="js-example-placeholder-single form-control">
+                                    <option value="{{$mission->staff_id}}" selected="selected">{{$mission->staff_name}}</option>
+                                    @foreach($staffs as $staff)
+                                        <option value="{{$staff->id}}">{{$staff->name}}</option>
+                                    @endforeach
+                                </select>
+                                    @else
+                                    <input class="form-control"  autocomplete="off" disabled="disabled" value="暂无空闲人员">
+                                    @endif
+                            @else
+                                <input class="form-control"  autocomplete="off" disabled="disabled" value="{{$mission->staff_name}}">
+                            @endif
+                        </div>
+
                         <div class="form-group">
                             <label>任务上限
                                 <small class="text-red">*</small>

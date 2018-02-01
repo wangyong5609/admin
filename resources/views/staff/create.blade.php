@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','添加员工')
 @section('other-css')
     {!! editor_css() !!}
     <link href="//cdn.bootcss.com/select2/4.0.3/css/select2.min.css" rel="stylesheet">

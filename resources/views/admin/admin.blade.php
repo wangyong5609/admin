@@ -94,7 +94,7 @@
                 <li class="header">主导航栏</li>
 
                 <li class="treeview">
-                    <a href="#">
+                    <a href="{{url('/home')}}">
                         <i class="fa  fa-check-square"></i>
                         <span>当前状态</span>
                         <span class="pull-right-container">
@@ -136,15 +136,6 @@
                         <span class="pull-right-container">
                              <i class="fa fa-angle-left pull-right"></i>
                          </span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="{{url('test')}}">
-                        <i class="fa  fa-file-text-o"></i>
-                        <span>测试</span>
-                        <span class="pull-right-container">
-                         <i class="fa fa-angle-left pull-right"></i>
-                        </span>
                     </a>
                 </li>
             </ul>

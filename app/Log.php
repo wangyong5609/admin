@@ -35,4 +35,18 @@ class Log extends Model
     {
         return $this->mission->description;
     }
+
+    public function getOriginalAttribute()
+    {
+        if ($this->attributes['project'] == '改派')
+            return Staff::find($this->attributes['original'])->name;
+        return $this->attributes['original'];
+    }
+
+    public function getModificationAttribute()
+    {
+        if ($this->attributes['project'] == '改派')
+            return Staff::find($this->attributes['modification'])->name;
+        return $this->attributes['modification'];
+    }
 }

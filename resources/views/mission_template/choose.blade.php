@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','选择模板')
 @section('content-header')
     <h1>
         任务模板
@@ -49,8 +50,8 @@
                             <td>{!!$template->sustain!!}天</td>
                             <td>{!!$template->arithmetic!!}天</td>
                             <td>
-                                <div class = 'row'>
-                                    <a href = '#'>使用</a>
+                                <div>
+                                    <a href = '{{url('mission/'.$template->id.'/template')}}'>使用</a>
                                 </div>
                             </td>
                         </tr>

@@ -1,4 +1,5 @@
 @extends('admin.admin')
+@section('title','操作日志列表')
 @section('content-header')
     <h1>
         操作日志
