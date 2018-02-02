@@ -48,7 +48,7 @@
                             <td>{!!$template->description!!}</td>
                             <td>{!!$template->upper!!}</td>
                             <td>{!!$template->sustain!!}天</td>
-                            <td>{!!$template->arithmetic!!}天</td>
+                            <td>{!!$template->arithmetic_name!!}</td>
                             <td>
                                 <div>
                                     <a href = '{{url('mission/'.$template->id.'/template')}}'>使用</a>
