@@ -76,7 +76,7 @@
                     @endphp
                     @foreach($staffs as $staff)
                         <tr>
-                            <td>@if($amount > 0)<input type="checkbox" name="check" value="">@endif</td>
+                            <td><input type="checkbox" name="check" value=""></td>
                             <td class="staff_id">{!!$staff->id!!}</td>
                             <td>{!!$staff->name!!}</td>
                             <td>{!!$staff->post_name!!}</td>
@@ -92,6 +92,8 @@
                                            @else
                                            value="{{$amount}}"
                                         @endif >
+                                @else
+                                    <input name="amount"  type="number" max="{{$upper}}" style="width: 100px">
                                 @endif
                             </td>
                             <td>

@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta id="token" name="token" value="{{csrf_token()}}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" sizes="any" mask="" href="https://dn-phphub.qbox.me/uploads/sites/KDiyAbV0hj1ytHpRTOlVpucbLebonxeX.png">
     <title>
         @section('title')
         @show
