@@ -51,18 +51,6 @@
                             <input  id="description" name = "description" type="text" class="form-control"  autocomplete="off"
                                     placeholder="任务描述" maxlength="80" value="@if(isset($tem)) {{$tem->description}} @endif ">
                         </div>
-                        <div class= "form-group" >
-                            <label>起始时间
-                            </label>
-                            <input  id="start_time" name = "start_time" type="date" required="required"  class="form-control"  autocomplete="off"
-                                    placeholder="起始时间" >
-                        </div>
-                        <div class="form-group">
-                            <label>结束时间
-                            </label>
-                            <input  id="end_time" name = "end_time" type="date" required="required" class="form-control"  autocomplete="off"
-                                    placeholder="结束时间">
-                        </div>
                         <div class="form-group">
                             <label>任务量
                             </label>

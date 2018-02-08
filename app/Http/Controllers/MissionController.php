@@ -33,7 +33,8 @@ class MissionController extends Controller
         $missions = $query->show()->orderBy('status')->orderBy('created_at','desc')->paginate($this->pageNumber());
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
-        return view('mission.index',compact('missions','title','posts','status'));
+        $template = Mission_template::all(['id','name']);
+        return view('mission.index',compact('missions','title','posts','status','template'));
     }
 
     /**
@@ -41,11 +42,12 @@ class MissionController extends Controller
      *
      * @return  \Illuminate\Http\Response
      */
-    public function create($id = null)
+    public function create(Request $request,$id = null)
     {
+        $template_id = $request->get('template_id');
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
-        $id && $tem = Mission_template::findOrFail($id);
+        $template_id && $tem = Mission_template::findOrFail($template_id);
 
         return view('mission.create',compact('posts','arithmetic','tem'));
     }

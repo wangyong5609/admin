@@ -11,7 +11,15 @@
 @stop
 
 @section('content')
-    <a href="{{url('mission/create')}}" class="btn btn-primary margin-bottom">创建新任务</a>
+    <form method="POST" action="{{url('/mission/create')}}" accept-charset="utf-8">
+        <lable>选择模板：</lable>
+        <select id="template_id" class="js-example-placeholder-single form-control">
+            @foreach($template as $model)
+                <option  value="{{$model->id}}">{{$model->name}}</option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn btn-primary">创建任务</button>
+    </form>
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">任务列表</h3>
