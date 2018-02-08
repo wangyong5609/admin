@@ -4,6 +4,7 @@
     <h1>
         任务分配
     </h1>
+
     <ol class="breadcrumb">
         <li class="active">任务 - 任务列表 - 任务分配</li>
     </ol>
@@ -20,11 +21,7 @@
                 <th>任务岗</th>
                 <th>任务状态</th>
                 <th>描述</th>
-                <th>起始时间</th>
-                <th>结束时间</th>
-                <th>实际完成时间</th>
                 <th>任务量</th>
-                <th>所属人员</th>
                 <th>上限</th>
                 <th>持续时间</th>
                 <th>算法</th>
@@ -36,11 +33,7 @@
                         <td>{!!$mission->post_name!!}</td>
                         <td>{!!$mission->status_name!!}</td>
                         <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
-                        <td>{!!$mission->start_time!!}</td>
-                        <td>{!!$mission->end_time!!}</td>
-                        <td>{!!$mission->complete_time!!}</td>
                         <td>{!!$mission->amount!!}</td>
-                        <td>{!!$mission->staff_name!!}</td>
                         <td>{!!$mission->upper!!} <input name="upper" type="hidden" value="{!!$mission->upper!!}"></td>
                         <td>{!!$mission->sustain!!}</td>
                         <td>{!!$mission->arithmetic_name!!}</td>
@@ -110,7 +103,7 @@
                                             <pd name="end_time">{{date('Y-m-d',time()+ $amount*$mission->sustain * 3600*24)}}</pd>
                                         @endif
                                     @else
-                                        $mission->end_time
+                                        <pd name="end_time">{{date('Y-m-d',time()+ $mission->sustain * 3600*24)}}</pd>
                                     @endif
                                 @endif
                             </td>
@@ -129,6 +122,7 @@
     <input name="url" type="hidden" value="{{url("mission/".$mission->id."/division")}}">
     <a onclick = 'add()' class="btn btn-primary margin-bottom">自动分配</a>
     <a href="{{url('mission')}}" class="btn btn-primary margin-bottom">返回任务列表</a>
+    <i title="分配规则: 原任务被分配后 默认拆分为多个子任务，子任务的任务状态默认为'正在进行;原任务将被关闭;如果原任务分配后有剩余，系统默认将剩余的任务生成一个待分配的任务。" class=" fa fa-question-circle-o"></i>
 @stop
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script>
@@ -156,6 +150,7 @@
         }, function(res) {
             if (res.code == 400){
                 alert(res.data)
+                arr = [];
             }else{
                 window.location.replace(res);
             }

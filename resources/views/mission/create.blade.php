@@ -17,8 +17,6 @@
 
     <div class = 'container'>
         <h2 class="page-header">新建任务</h2>
-        <a href="{{url('/choose')}}" class="btn btn-primary margin-bottom" >选择模板<a/>
-
         <form method="POST" action="{{url('/mission')}}" accept-charset="utf-8">
             {!! csrf_field() !!}
             <div class="nav-tabs-custom">

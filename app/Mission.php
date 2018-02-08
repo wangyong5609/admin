@@ -61,6 +61,8 @@ class Mission extends Model
      */
     public function getConsumingAttribute()
     {
+        if (empty($this->attributes['start_time']))
+            return 0;
         $date = floor((Carbon::now()->timestamp - strtotime($this->attributes['start_time']))/86400);
         return $date;
     }

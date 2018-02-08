@@ -30,9 +30,9 @@ class Missions extends Migration
         
         $table->integer('status')->comment('任务状态');
         
-        $table->date('start_time');
+        $table->date('start_time')->nullable();
         
-        $table->date('end_time');
+        $table->date('end_time')->nullable();
         
         $table->date('complete_time')->nullable();
         

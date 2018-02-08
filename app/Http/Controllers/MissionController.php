@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Dict;
 use App\Enums\DictTypes;
 use App\Http\Requests\MissionRequest;
+use App\Log;
 use App\Mission_template;
 use App\Helper\Util;
 use App\Staff;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Mission;
 use URL;
@@ -45,6 +47,7 @@ class MissionController extends Controller
     public function create(Request $request,$id = null)
     {
         $template_id = $request->get('template_id');
+        info($template_id);
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
         $template_id && $tem = Mission_template::findOrFail($template_id);
@@ -94,23 +97,49 @@ class MissionController extends Controller
             $amount = $datum['amount'];
             if ( $amount > $mission->upper)
                 return ['code' => 400,'data' => '任务量高于任务上限'];
+            if (empty($amount) || $amount<=0){
+                return ['code' => 400,'data' => '请填写正确的任务量'];
+            }
             if (count($data) == 1 && $amount == $mission->amount){
                 //如果仅把此任务分配给了一个人
-                $mission->update(collect($datum)->intersect($mission->getFillable())->toArray());
+                $update_data = collect($datum)->intersect($mission->getFillable())->toArray();
+                if ($mission->arithmetic_name =='单个'){
+                    $update_data['end_time'] = date('Y-m-d',time()+ $amount * $mission->sustain * 3600*24);
+                }else{
+                    $update_data['end_time'] = date('Y-m-d',time()+ $mission->sustain * 3600*24);
+                }
+                $update_data['start_time'] = date('Y-m-d',time());
+                $mission->update($update_data);
+                $log_mission_id = $mission->id;
+
             }else{
                 //分割任务
                 $insert = array_merge($mission->getAttributes(),$datum);
                 unset($insert['id']);
                 $insert['status'] = Dict::ofCode('doing')->first()->id;
                 $insert['name'] = $this->getMissionName($mission->name);
+                $insert['start_time'] = date('Y-m-d',time());
+                if ($mission->arithmetic_name =='单个'){
+                    $insert['end_time'] = date('Y-m-d',time()+ $amount * $mission->sustain * 3600*24);
+                }else{
+                    $insert['end_time'] = date('Y-m-d',time()+ $mission->sustain * 3600*24);
+                }
                 $insert['parent_id'] = $mission->id;
-                Mission::insert($insert);
+                $log_mission_id = Mission::insertGetId($insert);
 
                 $staff = Staff::find($datum['staff_id']);
                 //修改员工的任务状态为任务中
                 $staff->mission_status = Dict::where('code','missioning')->first()->id;
                 $staff->save();
             }
+            $data = [
+                'mission_id' => $log_mission_id,
+                'project' => '分配任务',
+                'original' => '',
+                'modification' => Staff::find($datum['staff_id'])->name,
+                'created_at' => Carbon::now()->toDateTimeString()
+            ];
+            Log::insert($data);
         }
 
         if ($sum < $mission->amount){
@@ -154,22 +183,22 @@ class MissionController extends Controller
         
         $mission->status = Dict::where('type',DictTypes::MISSION_STATUS)->where('code','new')->first()->id;
 
-        
+
         $mission->start_time = $request->start_time;
 
-        
+
         $mission->end_time = $request->end_time;
 
-        
+
         $mission->complete_time = $request->complete_time;
 
-        
+
         $mission->amount = $request->amount;
 
-        
+
         $mission->staff_id = $request->staff_id;
 
-        
+
         $mission->upper = $request->upper;
         $mission->arithmetic = $request->arithmetic;
         $mission->sustain = $request->sustain;
