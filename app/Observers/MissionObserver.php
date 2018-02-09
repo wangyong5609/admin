@@ -23,11 +23,10 @@ class MissionObserver
 
     use Util;
 
-    public function created(Mission $mission)
+    public function creating(Mission $mission)
     {
         Event::fake();
         $mission->name = $this->getMissionName($mission->name);
-        $mission->save();
     }
 
     public function updating(Mission $mission)
@@ -68,7 +67,7 @@ class MissionObserver
                         $project = '实际完成时间';
                         if ($origin->staff_id){
                             $exist = Mission::where('staff_id',$origin->staff_id)->whereNull('complete_time')
-                                ->where('status',Dict::where('type',DictTypes::MISSION_STATUS)->where('code','close')->first()->id)
+                                ->where('status','<>',Dict::where('type',DictTypes::MISSION_STATUS)->where('code','close')->first()->id)
                                 ->exists();
                             if (! $exist){
                                 $staff = Staff::find($origin->staff_id);
