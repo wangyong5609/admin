@@ -56,19 +56,20 @@
                             <input  id="description" name = "description" type="text" class="form-control"  autocomplete="off"
                                     placeholder="任务描述" maxlength="80" value="{{$mission->description}}">
                         </div>
-                        <div class="form-group">
-                            <label>起始时间
-                            </label>
-                            <input  id="start_time" name = "start_time" type="date" required="required"  class="form-control"  autocomplete="off"
-                                    value="{!!$mission->start_time!!}" placeholder="起始时间" maxlength="80">
-                        </div>
-                        <div class="form-group">
-                            <label>结束时间
-                            </label>
-                            <input  id="end_time" name = "end_time" type="date" required="required" class="form-control"  autocomplete="off"
-                                    value="{!!$mission->end_time!!}" placeholder="结束时间" maxlength="80">
-                        </div>
+
                         @if($mission->staff_id)
+                            <div class="form-group">
+                                <label>起始时间
+                                </label>
+                                <input  id="start_time" name = "start_time" type="date" required="required"  class="form-control"  autocomplete="off"
+                                        value="{!!$mission->start_time!!}" placeholder="起始时间" maxlength="80">
+                            </div>
+                            <div class="form-group">
+                                <label>结束时间
+                                </label>
+                                <input  id="end_time" name = "end_time" type="date" required="required" class="form-control"  autocomplete="off"
+                                        value="{!!$mission->end_time!!}" placeholder="结束时间" maxlength="80">
+                            </div>
                             <div class="form-group">
                                 <label>实际完成时间
                                 </label>
