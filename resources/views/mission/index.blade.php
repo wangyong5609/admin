@@ -11,16 +11,22 @@
 @stop
 
 @section('content')
-    <form method="POST" action="{{url('/mission/create')}}" accept-charset="utf-8">
+    <form method="get" action="{{url('/mission/create')}}" accept-charset="utf-8">
         <lable>选择模板：</lable>
-        <select id="template_id" class="js-example-placeholder-single form-control">
-            @foreach($template as $model)
-                <option  value="{{$model->id}}">{{$model->name}}</option>
-            @endforeach
-        </select>
+        &nbsp;
+        @if(count($template))
+            <select id="template_id" name="template_id" class="js-example-placeholder-single ">
+                    @foreach($template as $model)
+                        <option value=""></option>
+                        <option  value="{{$model->id}}">{{$model->name}}</option>
+                    @endforeach
+            </select>&nbsp;&nbsp;
+        @else
+            <a href="{{url('mission_template/create')}}" class="btn btn-primary">暂无模板,去创建</a>
+        @endif
         <button type="submit" class="btn btn-primary">创建任务</button>
     </form>
-    <div class="box box-primary">
+    <div style="margin-top: 5px" class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">任务列表</h3>
             <div class="box-tools">

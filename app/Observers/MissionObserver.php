@@ -9,6 +9,7 @@
 namespace App\Observers;
 
 use App\Dict;
+use App\Enums\DictTypes;
 use App\Helper\Util;
 use App\Log;
 use App\Mission;
@@ -66,9 +67,15 @@ class MissionObserver
                     case 'complete_time':
                         $project = '实际完成时间';
                         if ($origin->staff_id){
-                            $staff = Staff::find($origin->staff_id);
-                            $staff->mission_status = Dict::where('code','no_mission')->first()->id;
-                            $staff->save();
+                            $exist = Mission::where('staff_id',$origin->staff_id)->whereNull('complete_time')
+                                ->where('status',Dict::where('type',DictTypes::MISSION_STATUS)->where('code','close')->first()->id)
+                                ->exists();
+                            if (! $exist){
+                                $staff = Staff::find($origin->staff_id);
+                                $staff->mission_status = Dict::where('code','no_mission')->first()->id;
+                                $staff->save();
+                            }
+
                         }
                         break;
                     case 'amount':

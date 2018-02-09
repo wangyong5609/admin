@@ -8,6 +8,7 @@
  */
 namespace App\Helper;
 
+use App\Mission;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
@@ -46,6 +47,6 @@ trait Util
     {
         if (Str::contains($name,'-'));
             $name = explode('-',$name)[0];
-        return $name.'-'.self::getSeriesNumber(rand(1,1000));
+        return $name.'-'.self::getSeriesNumber(Mission::count()+1);
     }
 }

@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="box-body table-responsive">
-            @if( count($staffs))
+            @if( count($missions))
                 <table class="table table-hover table-bordered">
                     <thead>
                     <th >ID</th>
@@ -41,19 +41,19 @@
                     <th>任务状态</th>
                     </thead>
                     <tbody>
-                    @foreach($staffs as $staff)
+                    @foreach($missions as $mission)
                         <tr>
-                            <td>{!!$staff->id!!}</td>
-                            <td>{!!$staff->name!!}</td>
-                            <td>{!!$staff->post_name!!}</td>
-                            <td>{!!$staff->status_name!!}</td>
-                            @if($staff->mission_status_name == '任务中')
-                                <td>进行任务：{{$staff->doing_mission->name}}</td>
-                                <td>{{$staff->doing_mission->start_time}}</td>
-                                <td>{{$staff->doing_mission->end_time}}</td>
-                                <td>{{$staff->doing_mission->life}} 天</td>
-                                <td>{{$staff->doing_mission->consuming}} 天</td>
-                                <td>{{$staff->doing_mission->status_name}}</td>
+                            <td>{!!$mission->id!!}</td>
+                            <td>{!!$mission->staff_name!!}</td>
+                            <td>{!!$mission->staff->post_name!!}</td>
+                            <td>{!!$mission->staff->status_name!!}</td>
+                            @if($mission->staff->mission_status_name == '任务中')
+                                <td>进行任务：{{$mission->name}}</td>
+                                <td>{{$mission->start_time}}</td>
+                                <td>{{$mission->end_time}}</td>
+                                <td>{{$mission->life}} 天</td>
+                                <td>{{$mission->consuming}} 天</td>
+                                <td>{{$mission->status_name}}</td>
                             @else
                                 <td>{{$staff->mission_status_name}}</td>
                                 <td></td>
@@ -69,7 +69,7 @@
             @else
                 <div class="empty-block">暂无数据 ~_~ </div>
             @endif
-            {{ $staffs->render() }}
+            {{ $missions->render() }}
         </div>
     </div>
 @stop
