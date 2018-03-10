@@ -11,21 +11,6 @@
 @stop
 
 @section('content')
-    <form method="get" action="{{url('/mission/create')}}" accept-charset="utf-8">
-        <lable>选择模板：</lable>
-        &nbsp;
-        @if(count($template))
-            <select id="template_id" name="template_id" class="js-example-placeholder-single ">
-                    @foreach($template as $model)
-                        <option value=""></option>
-                        <option  value="{{$model->id}}">{{$model->name}}</option>
-                    @endforeach
-            </select>&nbsp;&nbsp;
-        @else
-            <a href="{{url('mission_template/create')}}" class="btn btn-primary">暂无模板,去创建</a>
-        @endif
-        <button type="submit" class="btn btn-primary">创建任务</button>
-    </form>
     <div style="margin-top: 5px" class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">任务列表</h3>
@@ -71,6 +56,7 @@
                     <th>任务名称</th>
                     <th>任务岗</th>
                     <th>任务状态</th>
+                    <th>优先级</th>
                     <th>描述</th>
                     <th>起始时间</th>
                     <th>结束时间</th>
@@ -86,6 +72,7 @@
                             <td>{!!$mission->name!!}</td>
                             <td>{!!$mission->post_name!!}</td>
                             <td>{!!$mission->status_name!!}</td>
+                            <td>{!!$mission->priority_name!!}</td>
                             <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
                             <td>{!!$mission->start_time!!}</td>
                             <td>{!!$mission->end_time!!}</td>
@@ -95,14 +82,10 @@
                             <td>
                                 <div>
                                     <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
-
-                                    @if(! $mission->staff_id)
-                                        <a href = '{{url('/mission/'.$mission->id.'/assign')}}'>自动分配</a>
-                                    @endif
-
-
-                                    @if(empty($mission->staff_id))
-                                        <a methods="delete" href = '{{url('/mission/'.$mission->id.'/delete')}}'>  删除</a>
+                                    @if($mission->start_time)
+                                        <a href = '{{url('/mission/'.$mission->id.'/complete')}}'>  完成</a>
+                                    @else
+                                        <a href = '{{url('/mission/'.$mission->id.'/start')}}' @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1) style="color: red" @endif>  接单</a>
                                     @endif
                                 </div>
                             </td>

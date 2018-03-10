@@ -34,6 +34,8 @@ Route::group(['middleware'=> 'web'],function(){
     Route::post('mission/{id}/division','\App\Http\Controllers\MissionController@division');//分割
     Route::get('mission/{id}/deleteMsg','\App\Http\Controllers\MissionController@DeleteMsg');
     Route::get('mission/{id}/template','\App\Http\Controllers\MissionController@create');
+    Route::get('mission/{id}/start','\App\Http\Controllers\MissionController@start');
+    Route::get('mission/{id}/complete','\App\Http\Controllers\MissionController@complete');
 });
 Route::get('choose','\App\Http\Controllers\MissionController@choose');
 //mission_template Routes
@@ -54,4 +56,5 @@ Route::group(['middleware'=> 'web'],function(){
 
 
 Route::get('home','\App\Http\Controllers\HomeController@home');
+Route::post('work','\App\Http\Controllers\StaffWorkLogController@store');
 Route::get('/','\App\Http\Controllers\HomeController@home');

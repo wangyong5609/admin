@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\StaffWorkLog;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,8 +26,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+//        $schedule->call(function () {
+//            if (StaffWorkLog::where('date',Carbon::yesterday()->toDateString())->exists()){
+//                $data = StaffWorkLog::where('date',Carbon::yesterday()->toDateString())->get();
+//                $data->each(function ($datum){
+//                    $datum->date = Carbon::now()->toDateString();
+//                });
+//                StaffWorkLog::insert($data);
+//            }
+//        })->everyMinute();
     }
 
     /**

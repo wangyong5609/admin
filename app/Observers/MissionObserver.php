@@ -26,6 +26,7 @@ class MissionObserver
     public function creating(Mission $mission)
     {
         Event::fake();
+        $mission->is_template == false &&
         $mission->name = $this->getMissionName($mission->name);
     }
 
@@ -65,17 +66,17 @@ class MissionObserver
                         break;
                     case 'complete_time':
                         $project = '实际完成时间';
-                        if ($origin->staff_id){
-                            $exist = Mission::where('staff_id',$origin->staff_id)->whereNull('complete_time')
-                                ->where('status','<>',Dict::where('type',DictTypes::MISSION_STATUS)->where('code','close')->first()->id)
-                                ->exists();
-                            if (! $exist){
-                                $staff = Staff::find($origin->staff_id);
-                                $staff->mission_status = Dict::where('code','no_mission')->first()->id;
-                                $staff->save();
-                            }
-
-                        }
+//                        if ($origin->staff_id){
+//                            $exist = Mission::where('staff_id',$origin->staff_id)->whereNull('complete_time')
+//                                ->where('status','<>',Dict::where('type',DictTypes::MISSION_STATUS)->where('code','close')->first()->id)
+//                                ->exists();
+//                            if (! $exist){
+//                                $staff = Staff::find($origin->staff_id);
+//                                $staff->mission_status = Dict::where('code','no_mission')->first()->id;
+//                                $staff->save();
+//                            }
+//
+//                        }
                         break;
                     case 'amount':
                         $project = '任务量';
@@ -108,6 +109,8 @@ class MissionObserver
                     case 'arithmetic':
                         $project = '算法';
                         break;
+                    default:
+                        return;
                 }
 
                 $data = [

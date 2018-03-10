@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Enums\CodeTypes;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,22 +20,31 @@ class Staff extends Model
 
 	protected $dates = ['deleted_at'];
     protected $fillable = [
-        'name','post','status','description'
+        'name','status','description'
     ];
 	
     protected $table = 'staffs';
 
     protected $appends = [
-        'post_name','status_name','last_mission_start','last_mission_end','doing_mission'
+        'post_names','last_mission_start','last_mission_end','doing_mission','status_name'
     ];
 
-    public function getPostNameAttribute()
+    public function getPostNamesAttribute()
     {
-        return $this->postDict->name;
+        return $this->posts()->pluck('name')->toArray();
     }
     public function getStatusNameAttribute()
     {
-        return $this->statusDict->name;
+        $log = $this->workLog()->where('date',Carbon::now()->toDateString())->first();
+        if ($log)
+            return $log->statusDict->name;
+        $log = $this->workLog()->where('date',Carbon::now()->addDay(-1)->toDateString())->first();
+        return $log? $log->statusDict->name:null;
+    }
+
+    public function workLog()
+    {
+        return $this->hasMany(StaffWorkLog::class,'staff_id');
     }
 
     public function getMissionStatusNameAttribute()
@@ -57,15 +67,11 @@ class Staff extends Model
         return empty($mission) ?  '无' : $mission->complete_time;
 
     }
-    public function postDict()
+    public function posts()
     {
-        return $this->belongsTo(Dict::class,'post');
-	}
-
-    public function statusDict()
-    {
-        return $this->belongsTo(Dict::class,'status');
+        return $this->belongsToMany(Post::class);
     }
+
     public function missionStatusDict()
     {
         return $this->belongsTo(Dict::class,'mission_status');

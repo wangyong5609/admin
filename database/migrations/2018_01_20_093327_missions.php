@@ -28,7 +28,7 @@ class Missions extends Migration
         
         $table->String('description')->nullable();
         
-        $table->integer('status')->comment('任务状态');
+        $table->integer('status')->comment('任务状态')->nullable();
         
         $table->date('start_time')->nullable();
         
@@ -36,7 +36,7 @@ class Missions extends Migration
         
         $table->date('complete_time')->nullable();
         
-        $table->float('amount');
+        $table->float('amount')->nullable();
         
         $table->integer('staff_id')->nullable();
         
@@ -44,11 +44,11 @@ class Missions extends Migration
 
         $table->float('sustain');
 
-        $table->integer('arithmetic');
+        $table->boolean('is_template')->default(false);
 
         $table->boolean('show')->default(true);
 
-        $table->integer('parent_id')->nullable();
+        $table->boolean('priority')->nullable();
 
         /**
          * Foreignkeys section

@@ -31,4 +31,9 @@ class DictTypes extends Enum
      * 员工任务状态
      */
     const STAFF_MISSION_STATUS = 'type_staff_mission_status';
+
+    /**
+     * 任务优先级
+     */
+    const MISSION_PRIORITY = 'type_mission_priority';
 }

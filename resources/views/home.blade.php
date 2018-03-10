@@ -45,7 +45,7 @@
                         <tr>
                             <td>{!!$staff->id!!}</td>
                             <td>{!!$staff->name!!}</td>
-                            <td>{!!$staff->post_name!!}</td>
+                            <td>{!! implode($staff->post_names,',')!!}</td>
                             <td>{!!$staff->status_name!!}</td>
                             @if($staff->mission_status_name == '任务中')
                                 <td>进行任务：{{$staff->doing_mission->name}}</td>

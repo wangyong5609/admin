@@ -34,22 +34,23 @@
                             <label>员工岗位
                                 <small class="text-red">*</small>
                             </label>
-                            <select required="required" id="post" name = "post" class="js-example-placeholder-single form-control" >
-                                @foreach($posts as $post)
-                                    <option @if($staff->post_name == $post->name) selected = "selected" @endif value="{{$post->id}}">{{$post->name}}</option>
-                                @endforeach
-                            </select>
+                            <br>
+                            @foreach($posts as $post)
+                                <input name="posts[]" type="checkbox" value="{{$post->id}}"
+                                       @if($staff->posts()->where('post_id',$post->id)->first())checked="checked" @endif />
+                                {{$post->name}}
+                            @endforeach
                         </div>
-                        <div class="form-group">
-                            <label>员工状态
-                                <small class="text-red">*</small>
-                            </label>
-                            <select required="required" id="status" name = "status" class="js-example-placeholder-single form-control">
-                                @foreach($status as $dict)
-                                    <option @if($staff->status_name == $dict->name) selected = "selected"@endif value="{{$dict->id}}">{{$dict->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        {{--<div class="form-group">--}}
+                            {{--<label>员工状态--}}
+                                {{--<small class="text-red">*</small>--}}
+                            {{--</label>--}}
+                            {{--<select required="required" id="status" name = "status" class="js-example-placeholder-single form-control">--}}
+                                {{--@foreach($status as $dict)--}}
+                                    {{--<option @if($staff->status_name == $dict->name) selected = "selected"@endif value="{{$dict->id}}">{{$dict->name}}</option>--}}
+                                {{--@endforeach--}}
+                            {{--</select>--}}
+                        {{--</div>--}}
                         <div class="form-group">
                             <label>描述
                             </label>

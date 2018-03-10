@@ -15,14 +15,6 @@ class DictsTableSeeder extends Seeder
 
         $dicts = [
             [
-                'type' => \App\Enums\DictTypes::STAFF_POST,
-                'items' => [
-                    '实验岗' => 'test',
-                    '检验岗' => 'checkout',
-                    '其他' => 'other',
-                ],
-            ],
-            [
                 'type' => \App\Enums\DictTypes::STAFF_STATUS,
                 'items' => [
                     '上班' => 'work',
@@ -41,17 +33,18 @@ class DictsTableSeeder extends Seeder
                 ],
             ],
             [
-                'type' => \App\Enums\DictTypes::MISSION_ARITHMETIC,
-                'items' => [
-                    '单个' => 'simple',
-                    '批量' => 'batch',
-                ],
-            ],
-            [
                 'type' => \App\Enums\DictTypes::STAFF_MISSION_STATUS,
                 'items' => [
                     '无任务' => 'no_mission',
                     '任务中' => 'missioning',
+                ],
+            ],
+            [
+                'type' => \App\Enums\DictTypes::MISSION_PRIORITY,
+                'items' => [
+                    '普通' => 'common',
+                    '优先' => 'importance',
+                    '紧急' => 'urgency',
                 ],
             ],
         ];

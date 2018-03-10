@@ -59,16 +59,6 @@
                             <input required="required" id="sustain" name = "sustain" type="number" class="form-control"  autocomplete="off"
                                    placeholder="持续时间" maxlength="80" value="{{$template->sustain}}">
                         </div>
-                        <div class="form-group">
-                            <label>时间算法
-                                <small class="text-red">*</small>
-                            </label>
-                            <select id="arithmetic" name = "arithmetic" class="js-example-placeholder-single form-control">
-                                @foreach($arithmetic as $dict)
-                                    <option value="{{$dict->id}}">{{$dict->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">保存</button>
                 </div>

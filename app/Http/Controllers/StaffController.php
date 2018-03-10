@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Dict;
 use App\Enums\DictTypes;
 use App\Helper\Util;
+use App\Post;
+use App\StaffWorkLog;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,10 +31,21 @@ class StaffController extends Controller
      */
     public function index()
     {
+        if ( ! StaffWorkLog::where('date',Carbon::now()->toDateString())->exists() && StaffWorkLog::where('date',Carbon::yesterday()->toDateString())->exists()){
+            $data = StaffWorkLog::where('date',Carbon::yesterday()->toDateString())->get();
+            $data->each(function ($datum){
+                $datum->date = Carbon::now()->toDateString();
+                $datum->disabled = true;
+                array_except($datum,'id');
+            });
+            StaffWorkLog::insert($data->toArray());
+        }
+
         $title = 'Index - staff';
         $query = $this->applyFilters(Staff::query());
-        $staffs = $query->paginate($this->pageNumber());
-        return view('staff.index',compact('staffs','title'));
+        $staffs = $query->get();
+        $status = Dict::ofType(DictTypes::STAFF_STATUS)->get();
+        return view('staff.index',compact('staffs','title','status'));
     }
 
     /**
@@ -41,9 +55,8 @@ class StaffController extends Controller
      */
     public function create()
     {
-        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
-        $status = Dict::where('type',DictTypes::STAFF_STATUS)->get();
-        return view('staff.create',compact('posts','status'));
+        $posts = Post::get();
+        return view('staff.create',compact('posts'));
     }
 
     /**
@@ -55,11 +68,13 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $staff = new Staff();
-
+        $posts = $request->posts;
         $staff->fill($request->intersect($staff->getFillable()));
 
         $staff->save();
-
+        foreach ($posts as $post){
+            $staff->posts()->attach($post);
+        }
         return redirect('staff');
     }
 
@@ -99,7 +114,7 @@ class StaffController extends Controller
 
         
         $staff = Staff::findOrfail($id);
-        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
+        $posts = Post::get();
         $status = Dict::where('type',DictTypes::STAFF_STATUS)->get();
         return view('staff.edit',compact('title','staff','posts','status'  ));
     }
@@ -118,7 +133,11 @@ class StaffController extends Controller
         $staff->fill($request->intersect(app(Staff::class)->getFillable()));
         
         $staff->save();
-
+        $staff->posts()->detach();
+        $posts = $request->posts;
+        foreach ($posts as $post){
+            $staff->posts()->attach($post);
+        }
         return redirect('staff');
     }
 

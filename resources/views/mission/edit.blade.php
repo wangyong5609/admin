@@ -57,26 +57,6 @@
                                     placeholder="任务描述" maxlength="80" value="{{$mission->description}}">
                         </div>
 
-                        @if($mission->staff_id)
-                            <div class="form-group">
-                                <label>起始时间
-                                </label>
-                                <input  id="start_time" name = "start_time" type="date" required="required"  class="form-control"  autocomplete="off"
-                                        value="{!!$mission->start_time!!}" placeholder="起始时间" maxlength="80">
-                            </div>
-                            <div class="form-group">
-                                <label>结束时间
-                                </label>
-                                <input  id="end_time" name = "end_time" type="date" required="required" class="form-control"  autocomplete="off"
-                                        value="{!!$mission->end_time!!}" placeholder="结束时间" maxlength="80">
-                            </div>
-                            <div class="form-group">
-                                <label>实际完成时间
-                                </label>
-                                <input  id="complete_time" name = "complete_time" type="date" class="form-control"  autocomplete="off"
-                                        value="{!!$mission->complete_time!!}" placeholder="实际完成时间">
-                            </div>
-                        @endif
                         <div class="form-group">
                             <label>任务量
                             </label>
@@ -115,16 +95,6 @@
                             </label>
                             <input required="required" id="sustain" name = "sustain" type="text" class="form-control"  autocomplete="off"
                                    placeholder="持续时间" maxlength="80" value="{{$mission->sustain}}">
-                        </div>
-                        <div class="form-group">
-                            <label>时间算法
-                                <small class="text-red">*</small>
-                            </label>
-                            <select id="arithmetic" name = "arithmetic" class="js-example-placeholder-single form-control">
-                                @foreach($arithmetic as $dict)
-                                    <option @if($mission->arithmetic == $dict->id) selected = "selected"@endif value="{{$dict->id}}">{{$dict->name}}</option>
-                                @endforeach
-                            </select>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">保存</button>

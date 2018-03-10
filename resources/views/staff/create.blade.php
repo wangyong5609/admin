@@ -37,21 +37,13 @@
                             <label>员工岗位
                                 <small class="text-red">*</small>
                             </label>
-                            <select id="post" name = "post" class="js-example-placeholder-single form-control">
+                            <br>
+                            <div style="font-size: ">
                                 @foreach($posts as $post)
-                                    <option value="{{$post->id}}">{{$post->name}}</option>
+                                    <input name="posts[]" type="checkbox" value="{{$post->id}}" />{{$post->name}}
                                 @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>员工状态
-                                <small class="text-red">*</small>
-                            </label>
-                            <select id="status" name = "status" class="js-example-placeholder-single form-control">
-                                @foreach($status as $dict)
-                                    <option value="{{$dict->id}}">{{$dict->name}}</option>
-                                @endforeach
-                            </select>
+                            </div>
+
                         </div>
                         <div class="form-group">
                             <label>描述

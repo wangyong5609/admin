@@ -9,6 +9,7 @@
 namespace App\Helper;
 
 use App\Mission;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
@@ -47,6 +48,21 @@ trait Util
     {
         if (Str::contains($name,'-'));
             $name = explode('-',$name)[0];
-        return $name.'-'.self::getSeriesNumber(Mission::count()+1);
+        return $name.'-'.self::getSeriesNumber(Mission::where('is_template',false)->count()+1);
+    }
+
+    public function diffDateOfDays(Carbon $start,Carbon $end)
+    {
+        if ($end->lte($start))
+            return 0;
+        $count = 1;
+        do{
+            if ($start->isWeekday())
+                continue;
+            $count++;
+            $start = $start->addDay(1);
+        }
+        while($end->gte($start));
+        return $count;
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Dict;
 use App\Enums\DictTypes;
 use App\Helper\Util;
+use App\Mission;
+use App\Post;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,8 +30,8 @@ class Mission_templateController extends Controller
      */
     public function index()
     {
-        $query = $this->applyFilters(Mission_template::query());
-        $templates = $query->paginate($this->pageNumber());
+        $query = $this->applyFilters(Mission::query());
+        $templates = $query->where('is_template',true)->paginate($this->pageNumber());
         return view('mission_template.index',compact('templates'));
     }
 
@@ -41,8 +43,7 @@ class Mission_templateController extends Controller
     public function create()
     {
         $title = '创建新模板';
-        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
-        $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
+        $posts = Post::get();
         return view('mission_template.create',compact('title','posts','arithmetic'));
     }
 
@@ -54,7 +55,7 @@ class Mission_templateController extends Controller
      */
     public function store(Request $request)
     {
-        $mission_template = new Mission_template();
+        $mission_template = new Mission();
 
         
         $mission_template->name = $request->name;
@@ -72,13 +73,13 @@ class Mission_templateController extends Controller
         $mission_template->sustain = $request->sustain;
 
         
-        $mission_template->arithmetic = $request->arithmetic;
+        $mission_template->is_template = true;
 
         
         
         $mission_template->save();
-        $templates = Mission_template::paginate($this->pageNumber());
-        return view('mission_template.index',compact('templates'));
+        $templates = Mission::where('is_template',true)->paginate($this->pageNumber());
+        return redirect('mission_template');
     }
 
     /**
@@ -115,9 +116,8 @@ class Mission_templateController extends Controller
             return URL::to('mission_template/'. $id . '/edit');
         }
 
-        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
-        $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
-        $template = Mission_template::findOrfail($id);
+        $posts = Post::get();
+        $template = Mission::findOrfail($id);
         return view('mission_template.edit',compact('title','template' ,'posts','arithmetic' ));
     }
 
@@ -130,9 +130,9 @@ class Mission_templateController extends Controller
      */
     public function update($id,Request $request)
     {
-        $mission_template = Mission_template::findOrfail($id);
+        $mission_template = Mission::findOrfail($id);
 
-        $mission_template->fill($request->intersect(app(Mission_template::class)->getFillable()));
+        $mission_template->fill($request->intersect(app(Mission::class)->getFillable()));
         
         
         $mission_template->save();
@@ -157,15 +157,10 @@ class Mission_templateController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param    int $id
-     * @return  \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
-     	$mission_template = Mission_template::findOrfail($id);
+     	$mission_template = Mission::findOrfail($id);
      	$mission_template->delete();
         return redirect('mission_template');
     }

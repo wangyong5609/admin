@@ -23,27 +23,27 @@ class Mission extends Model
     protected $table = 'missions';
 
     protected $fillable = [
-        'name','post_id','status','description','start_time','end_time',
-        'complete_time','amount','staff_id','upper','arithmetic','sustain'
+        'name','post_id','status','description','start_time','end_time','status_name',
+        'complete_time','amount','staff_id','upper','sustain','is_template'
     ];
 
     protected $appends = [
-        'short_desc'
+        'short_desc','priority_name'
     ];
     public function post()
     {
-        return $this->belongsTo(Dict::class,'post_id');
+        return $this->belongsTo(Post::class,'post_id');
     }
-
+    public function priorityDict()
+    {
+        return $this->belongsTo(Dict::class,'priority');
+    }
     public function statusDict()
     {
         return $this->belongsTo(Dict::class,'status');
     }
 
-    public function arithmeticDict()
-    {
-        return $this->belongsTo(Dict::class,'arithmetic');
-    }
+
 
     /**
      * 任务周期
@@ -66,11 +66,7 @@ class Mission extends Model
         $date = floor((Carbon::now()->timestamp - strtotime($this->attributes['start_time']))/86400);
         return $date;
     }
-    
-    public function getArithmeticNameAttribute()
-    {
-        return $this->arithmeticDict->name;
-    }
+
     public function getShortDescAttribute()
     {
         if (strlen($this->attributes['description']) > 60)
@@ -100,13 +96,25 @@ class Mission extends Model
     {
         return $this->post->name;
     }
+
+    public function getPriorityNameAttribute()
+    {
+        return $this->priorityDict->name;
+    }
     public function getStatusNameAttribute()
     {
-        return $this->statusDict->name;
+        if ($this->statusDict)
+            return $this->statusDict->name;
+        return null;
     }
 
     public function scopeShow($query)
     {
         return $query->where('show',true)->whereNotIn('status',Dict::whereIn('code',['close'])->get()->pluck('id'));
+    }
+
+    public function getIsCloseAttribute():bool
+    {
+        return $this->status == Dict::ofCode('close')->first()->id ? true :false;
     }
 }

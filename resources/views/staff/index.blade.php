@@ -1,3 +1,4 @@
+
 @extends('admin.admin')
 @section('title','员工列表')
 @section('content-header')
@@ -26,78 +27,50 @@
                 </form>
             </div>
         </div>
-        <div class="box-body table-responsive">
-            @if( count($staffs))
-            <table class="table table-hover table-bordered">
-                <thead>
-                <th >ID</th>
-                <th>姓名</th>
-                <th>岗位</th>
-                <th>状态</th>
-                <th>描述</th>
-                <th>操作</th>
-                </thead>
-                <tbody>
-                @foreach($staffs as $staff)
-                    <tr>
-                        <td>{!!$staff->id!!}</td>
-                        <td>{!!$staff->name!!}</td>
-                        <td>{!!$staff->post_name!!}</td>
-                        <td>{!!$staff->status_name!!}</td>
-                        <td>{!!$staff->description!!}</td>
-                        <td>
-                            <div>
-                                <a href = '{{url('/staff/'.$staff->id.'/edit')}}'>  修改</a>
-                                <a methods="delete" href = '{{url('/staff/'.$staff->id.'/delete')}}'>  删除</a>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-            @else
-                <div class="empty-block">暂无数据 ~_~ </div>
-            @endif
-            {{ $staffs->render() }}
-        </div>
+        <form method="POST" action="{{url('/work')}}" accept-charset="utf-8">
+            {!! csrf_field() !!}
+            <div class="box-body table-responsive">
+                @if( count($staffs))
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <th >ID</th>
+                        <th>姓名</th>
+                        <th>岗位</th>
+                        <th>状态</th>
+                        <th>描述</th>
+                        <th>操作</th>
+                        </thead>
+                        <tbody>
+                        @foreach($staffs as $staff)
+                            <tr>
+                                <td>{!!$staff->id!!}</td>
+                                <input type="hidden" name="staff_id[]" value="{{$staff->id}}">
+                                <td>{!!$staff->name!!}</td>
+                                <td>{{ implode(',',$staff->post_names) }}</td>
+                                <td>
+                                    <select id="status[]" name = "status[]" style="width:150px " class="form-control">
+                                        @foreach($status as $dict)
+                                            <option value="{{$dict->id}}" @if($dict->name == $staff->status_name) selected="selected" @endif>{{$dict->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>{!!$staff->description!!}</td>
+                                <td>
+                                    <div>
+                                        <a href = '{{url('/staff/'.$staff->id.'/edit')}}'>  修改</a>
+                                        <a methods="delete" href = '{{url('/staff/'.$staff->id.'/delete')}}'>  删除</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                @else
+                    <div class="empty-block">暂无数据 ~_~ </div>
+                @endif
+            </div>
+        </form>
+
     </div>
 @stop
-{{--@section('content')--}}
-
-{{--<div class = 'container'>--}}
-    {{--<h1>--}}
-        {{--staff Index--}}
-    {{--</h1>--}}
-    {{--<div class="row">--}}
-        {{--<form class = 'col s3' method = 'get' action = '{!!url("staff")!!}/create'>--}}
-            {{--<button class = 'btn red' type = 'submit'>Create New staff</button>--}}
-        {{--</form>--}}
-    {{--</div>--}}
-    {{--<table>--}}
-        {{--<thead>--}}
-            {{--<th>name</th>--}}
-            {{--<th>birthday</th>--}}
-            {{--<th>phone</th>--}}
-            {{--<th>actions</th>--}}
-        {{--</thead>--}}
-        {{--<tbody>--}}
-            {{--@foreach($staffs as $staff)--}}
-            {{--<tr>--}}
-                {{--<td>{!!$staff->name!!}</td>--}}
-                {{--<td>{!!$staff->birthday!!}</td>--}}
-                {{--<td>{!!$staff->phone!!}</td>--}}
-                {{--<td>--}}
-                    {{--<div class = 'row'>--}}
-                        {{--<a href = '#modal1' class = 'delete btn-floating modal-trigger red' data-link = "/staff/{!!$staff->id!!}/deleteMsg" ><i class = 'material-icons'>delete</i></a>--}}
-                        {{--<a href = '#' class = 'viewEdit btn-floating blue' data-link = '/staff/{!!$staff->id!!}/edit'><i class = 'material-icons'>edit</i></a>--}}
-                        {{--<a href = '#' class = 'viewShow btn-floating orange' data-link = '/staff/{!!$staff->id!!}'><i class = 'material-icons'>info</i></a>--}}
-                    {{--</div>--}}
-                {{--</td>--}}
-            {{--</tr>--}}
-            {{--@endforeach--}}
-        {{--</tbody>--}}
-    {{--</table>--}}
-    {{--{!! $staffs->render() !!}--}}
-
-{{--</div>--}}
-{{--@endsection--}}

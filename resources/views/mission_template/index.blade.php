@@ -36,7 +36,6 @@
                     <th>任务描述</th>
                     <th>任务上限</th>
                     <th>持续时间</th>
-                    <th>时间算法</th>
                     <th>操作</th>
                     </thead>
                     <tbody>
@@ -47,12 +46,12 @@
                             <td>{!!$template->post_name!!}</td>
                             <td>{!!$template->description!!}</td>
                             <td>{!!$template->upper!!}</td>
-                            <td>{!!$template->sustain!!}天</td>
-                            <td>{!!$template->arithmetic_name!!}</td>
+                            <td>{!!$template->sustain!!}</td>
                             <td>
                                 <div class = ''>
                                     <a href = '{{url('/mission_template/'.$template->id.'/edit')}}'>  修改</a>
                                     <a methods="delete" href = '{{url('/mission_template/'.$template->id.'/delete')}}'>  删除</a>
+                                    <a methods="delete" href = '{{url('/mission/'.$template->id.'/assign')}}'>  发布</a>
                                 </div>
                             </td>
                         </tr>

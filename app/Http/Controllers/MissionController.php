@@ -8,6 +8,7 @@ use App\Http\Requests\MissionRequest;
 use App\Log;
 use App\Mission_template;
 use App\Helper\Util;
+use App\Post;
 use App\Staff;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class MissionController extends Controller
     public function index(Request $request)
     {
         $title = 'Index - mission';
-        $query = $this->applyFilters(Mission::query());
+        $query = $this->applyFilters(Mission::query()->where('is_template',false));
         $missions = $query->show()->orderBy('status')->orderBy('created_at','desc')->paginate($this->pageNumber());
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
@@ -67,71 +68,34 @@ class MissionController extends Controller
     public function assign($id)
     {
         $mission = Mission::findOrfail($id);
-        $query = Staff::query()->where('post',$mission->post_id);
-        $query->orderBy('status')->orderBy('mission_status');
-        $staffs = $query->paginate($this->pageNumber());
-        return view('mission.assign',compact('mission','staffs'));
+        $post=Post::find($mission->post_id);
+        $query = $post->staffs();
+        $staffs = $query->orderBy('status')->orderBy('mission_status')->get();
+        $priority = Dict::ofType(DictTypes::MISSION_PRIORITY)->get();
+        return view('mission.assign',compact('mission','staffs','priority'));
     }
 
     /**
      * @param Request $request
      * @param $id
-     * @param data
-     * @param data[amount]
-     * @param data[staff_id]
-     * @param data[start_time]
-     * @param data[end_time]
      * @return array
      */
     public function division(Request $request,$id)
     {
+        info($request->all());
         $mission = Mission::findOrFail($id);
         $data = $request->get('data');
+        $priority = $request->priority;
         if (empty($data))
-            return ['code' => 400,'data' => '未选择任务分配成员'];
-        $sum = collect($data)->sum('amount');
-        if ($sum > $mission->amount)
-            return ['code' => 400,'data' => '任务分配总量高于任务量'];
-
+            return ['code' => 400,'data' => '分配失败'];
         foreach ($data as $datum){
-            $amount = $datum['amount'];
-            if ( $amount > $mission->upper)
-                return ['code' => 400,'data' => '任务量高于任务上限'];
-            if (empty($amount) || $amount<=0){
-                return ['code' => 400,'data' => '请填写正确的任务量'];
-            }
-            if (count($data) == 1 && $amount == $mission->amount){
-                //如果仅把此任务分配给了一个人
-                $update_data = collect($datum)->intersect($mission->getFillable())->toArray();
-                if ($mission->arithmetic_name =='单个'){
-                    $update_data['end_time'] = date('Y-m-d',time()+ $amount * $mission->sustain * 3600*24);
-                }else{
-                    $update_data['end_time'] = date('Y-m-d',time()+ $mission->sustain * 3600*24);
-                }
-                $update_data['start_time'] = date('Y-m-d',time());
-                $mission->update($update_data);
-                $log_mission_id = $mission->id;
-
-            }else{
-                //分割任务
-                $insert = array_merge($mission->getAttributes(),$datum);
-                unset($insert['id']);
-                $insert['status'] = Dict::ofCode('doing')->first()->id;
-                $insert['name'] = $this->getMissionName($mission->name);
-                $insert['start_time'] = date('Y-m-d',time());
-                if ($mission->arithmetic_name =='单个'){
-                    $insert['end_time'] = date('Y-m-d',time()+ $amount * $mission->sustain * 3600*24);
-                }else{
-                    $insert['end_time'] = date('Y-m-d',time()+ $mission->sustain * 3600*24);
-                }
-                $insert['parent_id'] = $mission->id;
-                $log_mission_id = Mission::insertGetId($insert);
-
-                $staff = Staff::find($datum['staff_id']);
-                //修改员工的任务状态为任务中
-                $staff->mission_status = Dict::where('code','missioning')->first()->id;
-                $staff->save();
-            }
+            $insert = array_merge($mission->getAttributes(),$datum);
+            unset($insert['id']);
+            $insert['status'] = Dict::ofCode('new')->first()->id;
+            $insert['name'] = $this->getMissionName($mission->name);
+            $insert['priority'] = $priority;
+            $insert['is_template'] = false;
+            $log_mission_id = Mission::insertGetId($insert);
             $data = [
                 'mission_id' => $log_mission_id,
                 'project' => '分配任务',
@@ -142,24 +106,54 @@ class MissionController extends Controller
             Log::insert($data);
         }
 
-        if ($sum < $mission->amount){
-            //任务量有剩余
-            $insert = array_merge($mission->getAttributes(),[
-                'parent_id' => $mission->id,
-                'amount' => $mission->amount - $sum,
-                'upper' => ($mission->amount - $sum) > $mission->upper ? $mission->upper : $mission->amount - $sum,
-                'name' => $this->getMissionName($mission->name)
-            ]);
-            unset($insert['id']);
-            Mission::insert($insert);
-        }
-
-        if (! (count($data) == 1 && $sum == $mission->amount)) {
-            //修改原任务
-            $mission->status = Dict::ofCode('close')->first()->id;
-            $mission->save();
-        }
         return url("mission");
+    }
+
+    /**
+     * 接单
+     */
+    public function start($id)
+    {
+        $model = Mission::findOrFail($id);
+        $query = Mission::query()->where('staff_id',$model->staff_id);
+        //判断是否有任务正在进行
+        $doing_mission = (clone $query)->where('status',Dict::ofCode('doing')->first()->id)->first();
+        if ($doing_mission && $doing_mission->priority > $model->priority){
+            $model->status = Dict::query()->ofCode('wait')->first()->id;
+        }else{
+            $model->status = Dict::query()->ofCode('doing')->first()->id;
+            $model->staff()->update([
+                'mission_status' => Dict::query()->ofCode('missioning')->first()->id
+            ]);
+        }
+        $model->start_time = Carbon::now()->toDateTimeString();
+        $model->end_time = Carbon::parse(date('Y-m-d',time()))->addDay($model->sustain*$model->amount)->toDateTimeString();
+        $model->save();
+        return redirect('mission');
+    }
+
+    /**
+     * 任务完成
+     */
+    public function Complete($id)
+    {
+        $model = Mission::findOrFail($id);
+        $query = Mission::query()->where('staff_id',$model->staff_id);
+
+        $model->status = Dict::query()->ofCode('complete')->first()->id;
+        $model->complete_time = Carbon::now()->toDateTimeString();
+        $model->save();
+
+        $wait_mission = (clone $query)->where('status',Dict::ofCode('wait')->first()->id)->orderBy('priority','desc')->first();
+        if ($wait_mission ){
+            $wait_mission->status = Dict::query()->ofCode('doing')->first()->id;
+            $wait_mission->save();
+        }else{
+            $model->staff()->update([
+                'mission_status' => Dict::query()->ofCode('no_mission')->first()->id
+            ]);
+        }
+        return redirect('mission');
     }
     /**
      * Store a newly created resource in storage.
@@ -247,14 +241,12 @@ class MissionController extends Controller
 
         
         $mission = Mission::findOrfail($id);
-        $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
+        $posts = Post::get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->where('code','!=','close')->get();
-        $arithmetic = Dict::where('type',DictTypes::MISSION_ARITHMETIC)->get();
-        $staffs = Staff::where('post',$mission->post_id)
-            ->where('mission_status',Dict::ofCode('no_mission')->first()->id)
-            ->where('status',Dict::ofCode('work')->first()->id)
-            ->get();
-        return view('mission.edit',compact('title','mission','posts','status','arithmetic','staffs'  ));
+        $post=Post::find($mission->post_id);
+        $query = $post->staffs();
+        $staffs = $query->orderBy('status')->orderBy('mission_status')->get();
+        return view('mission.edit',compact('title','mission','posts','status','staffs'  ));
     }
 
     /**

@@ -19,24 +19,28 @@
                 <th>ID</th>
                 <th>任务名称</th>
                 <th>任务岗</th>
-                <th>任务状态</th>
                 <th>描述</th>
                 <th>任务量</th>
                 <th>上限</th>
                 <th>持续时间</th>
-                <th>算法</th>
+                <th>优先级</th>
                 </thead>
                 <tbody>
                     <tr>
                         <td>{!!$mission->id!!}  <input name="mission_id" type="hidden" value="{!!$mission->id!!}"></td>
                         <td>{!!$mission->name!!}</td>
                         <td>{!!$mission->post_name!!}</td>
-                        <td>{!!$mission->status_name!!}</td>
                         <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
-                        <td>{!!$mission->amount!!}</td>
+                        <td><input id="total_amount" type="number" :minlength="1"></td>
                         <td>{!!$mission->upper!!} <input name="upper" type="hidden" value="{!!$mission->upper!!}"></td>
-                        <td>{!!$mission->sustain!!}</td>
-                        <td>{!!$mission->arithmetic_name!!}</td>
+                        <td><input id = "sustain" name="sustain" style="border:0;width: 100px" value="{!!$mission->sustain!!}"></td>
+                        <td>
+                            <select id="priority" name = "priority" class="js-example-placeholder-single form-control">
+                                @foreach($priority as $dict)
+                                    <option value="{{$dict->id}}">{{$dict->name}}</option>
+                                @endforeach
+                            </select>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -53,64 +57,30 @@
                     <th></th>
                     <th>ID</th>
                     <th>姓名</th>
-                    <th>岗位</th>
                     <th>工作状态</th>
                     <th>任务状态</th>
                     <th>上次任务开始时间</th>
                     <th>上次任务结束时间</th>
                     <th>任务量</th>
-                    <th>任务开始时间</th>
-                    <th>任务结束时间</th>
+                    <th>任务所需时长</th>
                     </thead>
                     <tbody>
-                    @php
-                        $amount = $mission->amount;
-                        $upper = $mission->upper;
-                    @endphp
                     @foreach($staffs as $staff)
                         <tr>
-                            <td><input type="checkbox" name="check" value=""></td>
+                            <td><input type="hidden" name="check" value=""></td>
                             <td class="staff_id">{!!$staff->id!!}</td>
                             <td>{!!$staff->name!!}</td>
-                            <td>{!!$staff->post_name!!}</td>
-                            <td >{!!$staff->status_name!!}</td>
+                            <td>{!!$staff->status_name!!}</td>
                             <td>{!!$staff->mission_status_name!!}</td>
                             <td>{!!$staff->last_mission_start!!}</td>
                             <td>{!!$staff->last_mission_end!!}</td>
                             <td>
-                                @if($amount > 0)
-                                    <input name="amount"  type="number" max="{{$upper}}" style="width: 100px"
-                                           @if($amount > $upper)
-                                           value="{{$upper}}"
-                                           @else
-                                           value="{{$amount}}"
-                                        @endif >
-                                @else
-                                    <input name="amount"  type="number" max="{{$upper}}" style="width: 100px">
-                                @endif
+                                <input id = "amount" name="amount" style="border:0;width: 100px">
                             </td>
                             <td>
-                                @if($amount > 0)
-                                    <pd name="start_time">{{date('Y-m-d',time())}}</pd>
-                                @endif
-                            </td>
-                            <td>
-                                @if($amount > 0 )
-                                    @if($mission->arithmetic_name =='单个')
-                                        @if($amount > $upper)
-                                            <pd name="end_time">{{date('Y-m-d',time()+ $upper*$mission->sustain * 3600*24)}}</pd>
-                                        @else
-                                            <pd name="end_time">{{date('Y-m-d',time()+ $amount*$mission->sustain * 3600*24)}}</pd>
-                                        @endif
-                                    @else
-                                        <pd name="end_time">{{date('Y-m-d',time()+ $mission->sustain * 3600*24)}}</pd>
-                                    @endif
-                                @endif
+                                <input id = "need_time" name="need_time" style="border:0;width: 100px">
                             </td>
                         </tr>
-                        @php
-                            $amount -= $upper
-                        @endphp
                     @endforeach
                     </tbody>
                 </table>
@@ -122,31 +92,58 @@
     <input name="url" type="hidden" value="{{url("mission/".$mission->id."/division")}}">
     <a onclick = 'add()' class="btn btn-primary margin-bottom">自动分配</a>
     <a href="{{url('mission')}}" class="btn btn-primary margin-bottom">返回任务列表</a>
-    <i title="分配规则: 原任务被分配后 默认拆分为多个子任务，子任务的任务状态默认为'正在进行;原任务将被关闭;如果原任务分配后有剩余，系统默认将剩余的任务生成一个待分配的任务。" class=" fa fa-question-circle-o"></i>
+    <i title="" class=" fa fa-question-circle-o"></i>
 @stop
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script>
+    $(function(){
+        var serachtimer;
+        $('#total_amount').bind('input propertychange', function(item) {
+
+            clearTimeout(serachtimer);
+            serachtimer=setTimeout(function(){
+                var total = $(" input[ id='total_amount' ] ").val();
+                var upper = $(" input[ name='upper' ] ").val();
+                Array.from($('input[id="amount"]')).forEach(function(item) {
+                    item.value = null;
+                    var amount ;
+                    if (total <=0 ) return false;
+                    var remainder = total - upper;
+                    if (remainder <= 0){
+                        amount = total;
+                    }else {
+                        amount = upper;
+                    }
+                    item.value = amount;
+                    $(item).closest('tr').find('input[name="need_time"]').val(Math.ceil(amount * $(" input[ id='sustain' ] ").val())+'天');
+                    total = total-upper;
+                })
+            },500)
+
+        });
+
+    })
+
     var arr = [];
     var add = function add() {
 
-        Array.from($('input[name="check"]:checked')).forEach(function(item) {
-            var amount = $(item).closest('tr').find('input[name="amount"]').val();
-            var start_time = $(item).closest('tr').find('pd[name="start_time"]').html();
-            var end_time = $(item).closest('tr').find('pd[name="end_time"]').html();
-            var staff_id = $(item).closest('tr').find('.staff_id').html();
-            var upper = $(" input[ name='upper' ] ").val();
-            var data = {
-                'amount': amount,
-                'staff_id' :staff_id,
-                'start_time' : start_time,
-                'end_time' : end_time
+        Array.from($('input[name="amount"]')).forEach(function(item) {
+            var amount = item.value;
+            if (amount){
+                var staff_id = $(item).closest('tr').find('.staff_id').html();
+                var data = {
+                    'amount': amount,
+                    'staff_id' :staff_id,
+                }
+                arr.push(data);
             }
-            arr.push(data);
+
         });
         console.log(arr);
         var url = $(" input[ name='url' ] ").val()
         $.post(url, {
-            'data' : arr
+            'data' : arr,
+            'priority' :$("#priority").find("option:selected").val()
         }, function(res) {
             if (res.code == 400){
                 alert(res.data)
