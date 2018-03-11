@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class StaffWorkLog extends Model
@@ -13,5 +14,10 @@ class StaffWorkLog extends Model
     public function statusDict()
     {
         return $this->belongsTo(Dict::class,'status');
+    }
+
+    public function todayStatus()
+    {
+        return $this->where('date',Carbon::now()->toDateString())->exists()?'已保存今日状态':'未保存今日状态';
     }
 }

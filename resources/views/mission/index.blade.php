@@ -26,15 +26,6 @@
                         </select>
                     </div>
 
-                    <div style="width: 120px;display:inline-block;float:left;" >
-                        <lable>岗位:</lable>
-                        <select   id="post_id" name= "post_id" >
-                            <option value=""></option>
-                            @foreach($posts as $post)
-                                <option value="{{$post->id}}">{{$post->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
 
                     <div class="input-group" style="width: 200px">
                         <input type="text" class="form-control input-sm pull-right" name="name"
@@ -59,7 +50,8 @@
                     <th>优先级</th>
                     <th>描述</th>
                     <th>起始时间</th>
-                    <th>结束时间</th>
+                    <th>计划时间</th>
+                    <th>已用时间 单位:天</th>
                     <th>实际完成时间</th>
                     <th>任务量</th>
                     <th>所属人员</th>
@@ -75,18 +67,22 @@
                             <td>{!!$mission->priority_name!!}</td>
                             <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
                             <td>{!!$mission->start_time!!}</td>
-                            <td>{!!$mission->end_time!!}</td>
+                            <td>{!!$mission->sustain!!}天</td>
+                            <td>{!!$mission->consuming!!}</td>
                             <td>{!!$mission->complete_time!!}</td>
                             <td>{!!$mission->amount!!}</td>
                             <td>{!!$mission->staff_name!!}</td>
                             <td>
                                 <div>
                                     <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
-                                    @if($mission->start_time)
-                                        <a href = '{{url('/mission/'.$mission->id.'/complete')}}'>  完成</a>
-                                    @else
-                                        <a href = '{{url('/mission/'.$mission->id.'/start')}}' @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1) style="color: red" @endif>  接单</a>
+                                    @if($mission->complete_time == '未完成')
+                                        @if($mission->start_time)
+                                            <a href = '{{url('/mission/'.$mission->id.'/complete')}}'>  完成</a>
+                                        @else
+                                            <a href = '{{url('/mission/'.$mission->id.'/start')}}' @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1) style="color: red" @endif>  接单</a>
+                                        @endif
                                     @endif
+
                                 </div>
                             </td>
                         </tr>

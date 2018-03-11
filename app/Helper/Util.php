@@ -8,7 +8,9 @@
  */
 namespace App\Helper;
 
+use App\Dict;
 use App\Mission;
+use App\StaffWorkLog;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -51,16 +53,21 @@ trait Util
         return $name.'-'.self::getSeriesNumber(Mission::where('is_template',false)->count()+1);
     }
 
-    public function diffDateOfDays(Carbon $start,Carbon $end)
+    public function diffDateOfDays(Carbon $start,Carbon $end,$staff_id)
     {
         if ($end->lte($start))
             return 0;
-        $count = 1;
+        $count = 0;
         do{
-            if ($start->isWeekday())
-                continue;
-            $count++;
+            $flag = StaffWorkLog::query()->where('staff_id',$staff_id)
+                ->where('date',$start->toDateString())
+                ->where('status',Dict::ofCode('work')->first()->id)
+                ->where('disabled',false)
+                ->exists();
+            if ($flag)
+                $count++;
             $start = $start->addDay(1);
+            //info($start->toDateString().$flag?'上班':'不上班');
         }
         while($end->gte($start));
         return $count;

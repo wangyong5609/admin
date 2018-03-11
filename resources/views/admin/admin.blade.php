@@ -3,7 +3,7 @@
 {{--顶部导航--}}
 @section('main-header')
     <header class="main-header">
-        <a href="{{url('/dashboard')}}" class="logo">
+        <a href="" class="logo">
             <span class="logo-mini">LC</span>
             <span class="logo-lg"><b>{{ env('APP_NAME','Laravel') }}</b></span>
         </a>

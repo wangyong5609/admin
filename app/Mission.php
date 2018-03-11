@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helper\Util;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Mission extends Model
 {
 	
-	use SoftDeletes;
+	use SoftDeletes,Util;
 
 	protected $dates = ['deleted_at'];
     
@@ -28,7 +29,7 @@ class Mission extends Model
     ];
 
     protected $appends = [
-        'short_desc','priority_name'
+        'short_desc','priority_name','consuming'
     ];
     public function post()
     {
@@ -46,25 +47,17 @@ class Mission extends Model
 
 
     /**
-     * 任务周期
-     * @return float
-     */
-    public function getLifeAttribute()
-    {
-        $date = floor((strtotime($this->attributes['end_time'])-strtotime($this->attributes['start_time']))/86400);
-        return $date;
-    }
-
-    /**
      * 已用时间
      * @return float
      */
     public function getConsumingAttribute()
     {
-        if (empty($this->attributes['start_time']))
-            return 0;
-        $date = floor((Carbon::now()->timestamp - strtotime($this->attributes['start_time']))/86400);
-        return $date;
+        $sum = MissionSwitch::where('mission_id',$this->id)->whereNotNull('consuming')->sum('consuming');
+        $model = MissionSwitch::where('mission_id',$this->id)->whereNull('stop_time')->first();
+        if ($model)
+            $sum += $this->diffDateOfDays(Carbon::parse($model->start_time),Carbon::now(),$model->mission->staff_id);
+        //info($this->diffDateOfDays(Carbon::parse($model->start_time),Carbon::now(),$model->mission->staff_id));
+        return $sum;
     }
 
     public function getShortDescAttribute()

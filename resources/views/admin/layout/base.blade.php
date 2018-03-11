@@ -14,9 +14,10 @@
 
     @section('head-css')
 
-        <link href="//cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.css" rel="stylesheet">
-        <link href="//cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{url('dist/css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{url('dist/css/AdminLTE.css')}}">
+        <link rel="stylesheet" href="{{url('dist/css/font-awesome.css')}}">
+        {{--<link rel="stylesheet" href="{{url('dist/css/css.css')}}">--}}
         <link rel="stylesheet" href="{{url('dist/css/skins/_all-skins.min.css')}}">
 
     @show
@@ -62,10 +63,8 @@
 </div>
 
 @section('head-js')
-    <script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
-    <script src="//cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="//cdn.bootcss.com/vue/2.0.0-rc.5/vue.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/vue.resource/1.0.2/vue-resource.min.js"></script>
+    <script src="{{url('dist/js/jquery.min.js')}}"></script>
+    <script src="{{url('dist/js/bootstrap.min.js')}}"></script>
     <script src="{{url('dist/js/admin.js')}}"></script>
     <script src="{{url('dist/js/demo.js')}}"></script>
 @show

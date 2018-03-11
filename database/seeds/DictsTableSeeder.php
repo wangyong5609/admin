@@ -27,7 +27,7 @@ class DictsTableSeeder extends Seeder
                 'items' => [
                     '尚未安排' => 'new',
                     '正在进行' => 'doing',
-                    '排除等待' => 'wait',
+                    '排队等待' => 'wait',
                     '已经完成' => 'complete',
                     '关闭' => 'close',
                 ],

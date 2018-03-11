@@ -8,6 +8,7 @@ use App\Http\Requests\MissionRequest;
 use App\Log;
 use App\Mission_template;
 use App\Helper\Util;
+use App\MissionSwitch;
 use App\Post;
 use App\Staff;
 use Carbon\Carbon;
@@ -69,8 +70,18 @@ class MissionController extends Controller
     {
         $mission = Mission::findOrfail($id);
         $post=Post::find($mission->post_id);
-        $query = $post->staffs();
-        $staffs = $query->orderBy('status')->orderBy('mission_status')->get();
+        $query = $post->staffs()->orderBy('status')->orderBy('mission_status');
+        $staffs = $post->staffs()->get();
+        $staffs->flatMap(function ($model){
+            $model->mission_rt = 0; //员工正在进行的任务的剩余所需时间
+            $mission = $model->missions()->where('status',Dict::ofCode('doing')->first()->id)->first();
+            if ($mission ){
+                $model->mission_rt = $mission->sustain - $mission->consuming;
+            }
+            $model->save();
+            return $model;
+        });
+        $staffs = $post->staffs()->orderBy('status')->orderBy('mission_status','desc')->orderBy('mission_rt')->get();
         $priority = Dict::ofType(DictTypes::MISSION_PRIORITY)->get();
         return view('mission.assign',compact('mission','staffs','priority'));
     }
@@ -92,9 +103,10 @@ class MissionController extends Controller
             $insert = array_merge($mission->getAttributes(),$datum);
             unset($insert['id']);
             $insert['status'] = Dict::ofCode('new')->first()->id;
-            $insert['name'] = $this->getMissionName($mission->name);
+            $insert['name'] = $this->getMissionName($request->mission_name);
             $insert['priority'] = $priority;
             $insert['is_template'] = false;
+            $insert['sustain'] = ceil(($mission->sustain / $mission->upper) * $datum['amount']);
             $log_mission_id = Mission::insertGetId($insert);
             $data = [
                 'mission_id' => $log_mission_id,
@@ -118,16 +130,22 @@ class MissionController extends Controller
         $query = Mission::query()->where('staff_id',$model->staff_id);
         //判断是否有任务正在进行
         $doing_mission = (clone $query)->where('status',Dict::ofCode('doing')->first()->id)->first();
+        $wait = Dict::query()->ofCode('wait')->first()->id;
         if ($doing_mission && $doing_mission->priority > $model->priority){
-            $model->status = Dict::query()->ofCode('wait')->first()->id;
+            $model->status = $wait;
         }else{
+            if ($doing_mission && $doing_mission->priority < $model->priority){
+                $doing_mission->status = $wait;
+                app(MissionSwitch::class)->missionOff($doing_mission->id);
+                $doing_mission->save();
+            }
+            app(MissionSwitch::class)->missionOn($model->id);
             $model->status = Dict::query()->ofCode('doing')->first()->id;
-            $model->staff()->update([
-                'mission_status' => Dict::query()->ofCode('missioning')->first()->id
-            ]);
+            $staff = Staff::find($model->staff_id);
+            $staff->mission_status = Dict::query()->ofCode('missioning')->first()->id;
+            $staff->save();
         }
         $model->start_time = Carbon::now()->toDateTimeString();
-        $model->end_time = Carbon::parse(date('Y-m-d',time()))->addDay($model->sustain*$model->amount)->toDateTimeString();
         $model->save();
         return redirect('mission');
     }
@@ -144,14 +162,18 @@ class MissionController extends Controller
         $model->complete_time = Carbon::now()->toDateTimeString();
         $model->save();
 
+        app(MissionSwitch::class)->missionOff($model->id);
+
         $wait_mission = (clone $query)->where('status',Dict::ofCode('wait')->first()->id)->orderBy('priority','desc')->first();
         if ($wait_mission ){
             $wait_mission->status = Dict::query()->ofCode('doing')->first()->id;
             $wait_mission->save();
+
+            app(MissionSwitch::class)->missionOn($wait_mission->id);
         }else{
-            $model->staff()->update([
-                'mission_status' => Dict::query()->ofCode('no_mission')->first()->id
-            ]);
+            $staff = Staff::find($model->staff_id);
+            $staff->mission_status = Dict::query()->ofCode('no_mission')->first()->id;
+            $staff->save();
         }
         return redirect('mission');
     }

@@ -44,7 +44,7 @@
                             <label>任务状态
                                 <small class="text-red">*</small>
                             </label>
-                            <select required="required" id="status" name = "status" class="js-example-placeholder-single form-control">
+                            <select  disabled="disabled"required="required" id="status" name = "status" class="js-example-placeholder-single form-control">
                                 @foreach($status as $dict)
                                     <option @if($mission->status_name == $dict->name) selected = "selected"@endif value="{{$dict->id}}">{{$dict->name}}</option>
                                 @endforeach

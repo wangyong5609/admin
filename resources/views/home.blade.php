@@ -35,7 +35,7 @@
                     <th>状态</th>
                     <th>当前状态</th>
                     <th>起始时间</th>
-                    <th>结束时间</th>
+                    <th>完成时间</th>
                     <th>项目总时长</th>
                     <th>已用时长</th>
                     <th>任务状态</th>
@@ -50,8 +50,8 @@
                             @if($staff->mission_status_name == '任务中')
                                 <td>进行任务：{{$staff->doing_mission->name}}</td>
                                 <td>{{$staff->doing_mission->start_time}}</td>
-                                <td>{{$staff->doing_mission->end_time}}</td>
-                                <td>{{$staff->doing_mission->life}} 天</td>
+                                <td>{{$staff->doing_mission->complete_time}}</td>
+                                <td>{{$staff->doing_mission->sustain}} 天</td>
                                 <td>{{$staff->doing_mission->consuming}} 天</td>
                                 <td>{{$staff->doing_mission->status_name}}</td>
                             @else

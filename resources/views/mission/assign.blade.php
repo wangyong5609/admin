@@ -21,19 +21,19 @@
                 <th>任务岗</th>
                 <th>描述</th>
                 <th>任务量</th>
-                <th>上限</th>
-                <th>持续时间</th>
+                <th>任务数量上限</th>
+                <th>任务时间(天)</th>
                 <th>优先级</th>
                 </thead>
                 <tbody>
                     <tr>
                         <td>{!!$mission->id!!}  <input name="mission_id" type="hidden" value="{!!$mission->id!!}"></td>
-                        <td>{!!$mission->name!!}</td>
+                        <td><input name="mission_name" type="text" value="{!!$mission->name!!}"></td>
                         <td>{!!$mission->post_name!!}</td>
                         <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
                         <td><input id="total_amount" type="number" :minlength="1"></td>
                         <td>{!!$mission->upper!!} <input name="upper" type="hidden" value="{!!$mission->upper!!}"></td>
-                        <td><input id = "sustain" name="sustain" style="border:0;width: 100px" value="{!!$mission->sustain!!}"></td>
+                        <td><input disabled = "disabled" id = "sustain" name="sustain" style="border:0;width: 100px" value="{!!$mission->sustain!!}"></td>
                         <td>
                             <select id="priority" name = "priority" class="js-example-placeholder-single form-control">
                                 @foreach($priority as $dict)
@@ -75,10 +75,10 @@
                             <td>{!!$staff->last_mission_start!!}</td>
                             <td>{!!$staff->last_mission_end!!}</td>
                             <td>
-                                <input id = "amount" name="amount" style="border:0;width: 100px">
+                                <input id = "amount" name="amount" readonly="readonly" style="border:0;width: 100px">
                             </td>
                             <td>
-                                <input id = "need_time" name="need_time" style="border:0;width: 100px">
+                                <input id = "need_time" name="need_time"  readonly="readonly" style="border:0;width: 100px">
                             </td>
                         </tr>
                     @endforeach
@@ -90,11 +90,11 @@
         </div>
     </div>
     <input name="url" type="hidden" value="{{url("mission/".$mission->id."/division")}}">
-    <a onclick = 'add()' class="btn btn-primary margin-bottom">自动分配</a>
-    <a href="{{url('mission')}}" class="btn btn-primary margin-bottom">返回任务列表</a>
-    <i title="" class=" fa fa-question-circle-o"></i>
+    <a onclick = 'add()' class="btn btn-primary margin-bottom">确定</a>
+    {{--<i title="" class=" fa fa-question-circle-o"></i>--}}
+    <a onclick = 'print()' class="btn btn-primary margin-bottom">打印</a>
 @stop
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="{{url('dist/js/jquery.min.js')}}"></script>
 <script>
     $(function(){
         var serachtimer;
@@ -103,9 +103,12 @@
             clearTimeout(serachtimer);
             serachtimer=setTimeout(function(){
                 var total = $(" input[ id='total_amount' ] ").val();
+                var sustain = $(" input[ id='sustain' ] ").val();
                 var upper = $(" input[ name='upper' ] ").val();
+                var need = sustain/upper;
                 Array.from($('input[id="amount"]')).forEach(function(item) {
                     item.value = null;
+
                     var amount ;
                     if (total <=0 ) return false;
                     var remainder = total - upper;
@@ -115,7 +118,9 @@
                         amount = upper;
                     }
                     item.value = amount;
-                    $(item).closest('tr').find('input[name="need_time"]').val(Math.ceil(amount * $(" input[ id='sustain' ] ").val())+'天');
+                    console.log(need);
+                    console.log(amount);
+                    $(item).closest('tr').find('input[name="need_time"]').val(Math.ceil((need * amount))+'天');
                     total = total-upper;
                 })
             },500)
@@ -143,7 +148,8 @@
         var url = $(" input[ name='url' ] ").val()
         $.post(url, {
             'data' : arr,
-            'priority' :$("#priority").find("option:selected").val()
+            'priority' :$("#priority").find("option:selected").val(),
+            'mission_name' : $(" input[ name='mission_name' ] ").val()
         }, function(res) {
             if (res.code == 400){
                 alert(res.data)

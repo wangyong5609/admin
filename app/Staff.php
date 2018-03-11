@@ -26,7 +26,7 @@ class Staff extends Model
     protected $table = 'staffs';
 
     protected $appends = [
-        'post_names','last_mission_start','last_mission_end','doing_mission','status_name'
+        'post_names','last_mission_start','last_mission_end','doing_mission','status_name','status_id'
     ];
 
     public function getPostNamesAttribute()
@@ -42,6 +42,13 @@ class Staff extends Model
         return $log? $log->statusDict->name:null;
     }
 
+    public function getStatusIdAttribute()
+    {
+        $log = $this->workLog()->where('date',Carbon::now()->toDateString())->first();
+        if ($log)
+            return $log->statusDict->id;
+        return null;
+    }
     public function workLog()
     {
         return $this->hasMany(StaffWorkLog::class,'staff_id');
@@ -54,6 +61,11 @@ class Staff extends Model
 
     public function getLastMissionStartAttribute()
     {
+        $doing = Mission::where('status',Dict::ofCode('doing')->first()->id)
+            ->where('staff_id',$this->attributes['id'])
+            ->first();
+        if ($doing)
+            return $doing->start_time;
         $mission = Mission::where('staff_id',$this->attributes['id'])->whereNotNull('complete_time')->orderBy('updated_at','desc')->first();
 
         return empty($mission) ?  '无' : $mission->start_time;
@@ -84,6 +96,6 @@ class Staff extends Model
 
     public function getDoingMissionAttribute()
     {
-        return $this->missions()->whereNull('complete_time')->orderBy('updated_at','desc')->first();
+        return $this->missions()->where('status',Dict::ofCode('doing')->first()->id)->first();
     }
 }

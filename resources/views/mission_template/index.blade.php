@@ -34,8 +34,8 @@
                     <th>任务名称</th>
                     <th>任务岗</th>
                     <th>任务描述</th>
-                    <th>任务上限</th>
-                    <th>持续时间</th>
+                    <th>任务数量上限</th>
+                    <th>任务时间</th>
                     <th>操作</th>
                     </thead>
                     <tbody>
@@ -46,7 +46,7 @@
                             <td>{!!$template->post_name!!}</td>
                             <td>{!!$template->description!!}</td>
                             <td>{!!$template->upper!!}</td>
-                            <td>{!!$template->sustain!!}</td>
+                            <td>{!!$template->sustain!!}天</td>
                             <td>
                                 <div class = ''>
                                     <a href = '{{url('/mission_template/'.$template->id.'/edit')}}'>  修改</a>

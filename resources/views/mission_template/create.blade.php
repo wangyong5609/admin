@@ -50,18 +50,18 @@
                                placeholder="任务描述" maxlength="120">
                     </div>
                     <div class="form-group">
-                        <label>任务上限
+                        <label>任务数量上限
                             <small class="text-red">*</small>
                         </label>
                         <input required="required" id="upper" name = "upper"type="number" class="form-control"  autocomplete="off"
-                               placeholder="任务上限" maxlength="80">
+                               placeholder="任务数量上限" maxlength="80">
                     </div>
                     <div class="form-group">
-                        <label>持续时间
+                        <label>任务时间(天)
                             <small class="text-red">*</small>
                         </label>
                         <input required="required" id="sustain" name = "sustain"  class="form-control"  autocomplete="off"
-                               placeholder="持续时间" maxlength="80">
+                               placeholder="任务时间" maxlength="80">
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">保存</button>

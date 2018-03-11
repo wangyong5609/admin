@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Staff;
 use App\StaffWorkLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,7 +27,6 @@ class StaffWorkLogController extends Controller
                 ['status' =>$status[$key]]
             );
             $model = StaffWorkLog::where(['date' =>Carbon::now()->toDateString(),'staff_id' => $val])->first();
-            info($model);
             if ($model){
                 $model->status = $status[$key];
                 $model->disabled = false;
@@ -36,6 +36,11 @@ class StaffWorkLogController extends Controller
                     'date' =>Carbon::now()->toDateString(),'staff_id' => $val
                 ]);
             }
+
+            $staff = Staff::find($val);
+            $staff->status = $status[$key];
+            $staff->save();
+
         }
         return redirect('staff');
     }

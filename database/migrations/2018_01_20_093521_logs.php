@@ -26,8 +26,8 @@ class Logs extends Migration
         
         $table->String('project');
         
-        $table->String('original');
-        
+        $table->String('original')->nullable();
+
         $table->String('modification');
         
         /**

@@ -30,11 +30,11 @@ class Missions extends Migration
         
         $table->integer('status')->comment('任务状态')->nullable();
         
-        $table->date('start_time')->nullable();
+        $table->dateTime('start_time')->nullable();
         
-        $table->date('end_time')->nullable();
+        $table->dateTime('end_time')->nullable();
         
-        $table->date('complete_time')->nullable();
+        $table->dateTime('complete_time')->nullable();
         
         $table->float('amount')->nullable();
         
@@ -43,6 +43,8 @@ class Missions extends Migration
         $table->integer('upper');
 
         $table->float('sustain');
+
+        $table->integer('life')->nullable();
 
         $table->boolean('is_template')->default(false);
 
