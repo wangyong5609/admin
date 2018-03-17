@@ -53,7 +53,7 @@ Route::group(['middleware'=> ['web','auth']],function(){
 Route::group(['middleware'=> ['web','auth']],function(){
     Route::get('/home','\App\Http\Controllers\HomeController@index');
     Route::post('work','\App\Http\Controllers\StaffWorkLogController@store');
-    Route::get('/','\App\Http\Controllers\HomeController@home');
+    Route::get('/','\App\Http\Controllers\HomeController@index');
 });
 Auth::routes();
 
