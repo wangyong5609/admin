@@ -10,15 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::group(['namespace' => 'Admin'], function () {
-    Route::get('/dashboard', 'AdminController@index'); //后台首页
-    Route::get('/admin/info/index','AdminController@admininfo');//管理员资料
-    Route::get('/admin/usermember/index','AdminController@usermembershow');//用户管理界面
-    Route::get('admin/article/index','AdminController@articleshow');//已发文章界面
-    Route::get('admin/article/show','AdminController@uploadarticle');//创建文章
-});
+
 //staff Routes
-Route::group(['middleware'=> 'web'],function(){
+Route::group(['middleware'=> ['web','auth']],function(){
     Route::resource('staff','\App\Http\Controllers\StaffController');
     Route::post('staff/{id}/update','\App\Http\Controllers\StaffController@update');
     Route::get('staff/{id}/delete','\App\Http\Controllers\StaffController@destroy');
@@ -26,7 +20,7 @@ Route::group(['middleware'=> 'web'],function(){
 });
 
 //mission Routes
-Route::group(['middleware'=> 'web'],function(){
+Route::group(['middleware'=> ['web','auth']],function(){
     Route::resource('mission','\App\Http\Controllers\MissionController');
     Route::post('mission/{id}/update','\App\Http\Controllers\MissionController@update');
     Route::get('mission/{id}/delete','\App\Http\Controllers\MissionController@destroy');
@@ -36,10 +30,11 @@ Route::group(['middleware'=> 'web'],function(){
     Route::get('mission/{id}/template','\App\Http\Controllers\MissionController@create');
     Route::get('mission/{id}/start','\App\Http\Controllers\MissionController@start');
     Route::get('mission/{id}/complete','\App\Http\Controllers\MissionController@complete');
+    Route::get('choose','\App\Http\Controllers\MissionController@choose');
 });
-Route::get('choose','\App\Http\Controllers\MissionController@choose');
+
 //mission_template Routes
-Route::group(['middleware'=> 'web'],function(){
+Route::group(['middleware'=> ['web','auth']],function(){
     Route::resource('mission_template','\App\Http\Controllers\Mission_templateController');
     Route::post('mission_template/{id}/update','\App\Http\Controllers\Mission_templateController@update');
     Route::get('mission_template/{id}/delete','\App\Http\Controllers\Mission_templateController@destroy');
@@ -47,7 +42,7 @@ Route::group(['middleware'=> 'web'],function(){
 });
 
 //log Routes
-Route::group(['middleware'=> 'web'],function(){
+Route::group(['middleware'=> ['web','auth']],function(){
     Route::resource('log','\App\Http\Controllers\LogController');
     Route::post('log/{id}/update','\App\Http\Controllers\LogController@update');
     Route::get('log/{id}/delete','\App\Http\Controllers\LogController@destroy');
@@ -55,6 +50,10 @@ Route::group(['middleware'=> 'web'],function(){
 });
 
 
-Route::get('home','\App\Http\Controllers\HomeController@home');
-Route::post('work','\App\Http\Controllers\StaffWorkLogController@store');
-Route::get('/','\App\Http\Controllers\HomeController@home');
+Route::group(['middleware'=> ['web','auth']],function(){
+    Route::get('/home','\App\Http\Controllers\HomeController@index');
+    Route::post('work','\App\Http\Controllers\StaffWorkLogController@store');
+    Route::get('/','\App\Http\Controllers\HomeController@home');
+});
+Auth::routes();
+

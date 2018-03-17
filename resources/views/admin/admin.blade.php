@@ -138,6 +138,18 @@
                          </span>
                     </a>
                 </li>
+                {{--<li class="treeview">--}}
+                    {{--<a href="#">--}}
+                        {{--<i class="fa fa-user"></i>--}}
+                        {{--<span>个人设置</span>--}}
+                        {{--<span class="pull-right-container">--}}
+                             {{--<i class="fa fa-angle-left pull-right"></i>--}}
+                         {{--</span>--}}
+                    {{--</a>--}}
+                    {{--<ul class="treeview-menu">--}}
+                        {{--<li><a href="{{url('password')}}"><i class="fa fa-star-o"></i>修改密码</a></li>--}}
+                    {{--</ul>--}}
+                {{--</li>--}}
             </ul>
         </section>
         <!-- /.sidebar -->
