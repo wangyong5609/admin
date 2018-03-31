@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dict;
+use App\Enums\DictCodes;
 use App\Enums\DictTypes;
 use App\Http\Requests\MissionRequest;
 use App\Log;
@@ -11,6 +12,7 @@ use App\Helper\Util;
 use App\MissionSwitch;
 use App\Post;
 use App\Staff;
+use App\StaffWorkLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Mission;
@@ -37,7 +39,6 @@ class MissionController extends Controller
         $missions = $query->show()->orderBy('status')->orderBy('created_at','desc')->paginate($this->pageNumber());
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
-        $template = Mission_template::all(['id','name']);
         return view('mission.index',compact('missions','title','posts','status','template'));
     }
 
@@ -57,21 +58,12 @@ class MissionController extends Controller
         return view('mission.create',compact('posts','arithmetic','tem'));
     }
 
-
-    public function choose()
-    {
-        $templates = Mission_template::paginate($this->pageNumber());
-        return view('mission_template.choose',compact('templates'));
-    }
-
-
-
     public function assign($id)
     {
         $mission = Mission::findOrfail($id);
-        $post=Post::find($mission->post_id);
-        $query = $post->staffs()->orderBy('status')->orderBy('mission_status');
-        $staffs = $post->staffs()->get();
+        $post = Post::find($mission->post_id);
+
+        $staffs = $post ? $post->staffs()->get(): Staff::get();
         $staffs->flatMap(function ($model){
             $model->mission_rt = 0; //员工正在进行的任务的剩余所需时间
             $mission = $model->missions()->where('status',Dict::ofCode('doing')->first()->id)->first();
@@ -81,12 +73,22 @@ class MissionController extends Controller
             $model->save();
             return $model;
         });
-        $staffs = $post->staffs()->orderBy('status')->orderBy('mission_status','desc')->orderBy('mission_rt')->get();
+        $staffs = $post ? $post->staffs(): Staff::query();
+        $staffs = $staffs->orderBy('status')->orderBy('mission_status','desc')->orderBy('mission_rt')->get();
         $priority = Dict::ofType(DictTypes::MISSION_PRIORITY)->get();
+
+        if ($mission->device){
+            $count = Mission::where('status',Dict::ofCode(DictCodes::MISSION_STATUS_DOING)->first()->id)
+                ->where('device_id',$mission->device_id)->count();
+            $number = ($mission->device->amount - $count) >= 0 ? ($mission->device->amount - $count): 0;
+            \Session::flash('message',"$count 台 ".$mission->device->name.' 正在使用中,剩余可用:'.$number);
+        }
+
         return view('mission.assign',compact('mission','staffs','priority'));
     }
 
     /**
+     * 发布任务
      * @param Request $request
      * @param $id
      * @return array
@@ -141,13 +143,21 @@ class MissionController extends Controller
             }
             app(MissionSwitch::class)->missionOn($model->id);
             $model->status = Dict::query()->ofCode('doing')->first()->id;
+
             $staff = Staff::find($model->staff_id);
             $staff->mission_status = Dict::query()->ofCode('missioning')->first()->id;
             $staff->save();
+
+            if ($model->is_special == true){
+                StaffWorkLog::updateOrCreate(
+                    ['staff_id' => $staff->id, 'date' => Carbon::now()->toDateString()],
+                    ['status' => Dict::ofCode(DictCodes::STAFF_STATUS_BUSINESS)->first()->id]
+                );
+            }
         }
         $model->start_time = Carbon::now()->toDateTimeString();
         $model->save();
-        return redirect('mission');
+        return redirect('mission')->with('success','接单成功');
     }
 
     /**
@@ -170,12 +180,27 @@ class MissionController extends Controller
             $wait_mission->save();
 
             app(MissionSwitch::class)->missionOn($wait_mission->id);
+
+            if ($wait_mission->is_special == true){
+                StaffWorkLog::updateOrCreate(
+                    ['staff_id' => $wait_mission->staff_id, 'date' => Carbon::now()->toDateString()],
+                    ['status' => Dict::ofCode(DictCodes::STAFF_STATUS_BUSINESS)->first()->id]
+                );
+            }
         }else{
             $staff = Staff::find($model->staff_id);
             $staff->mission_status = Dict::query()->ofCode('no_mission')->first()->id;
             $staff->save();
+
+            if ($model->is_special == true){
+                StaffWorkLog::updateOrCreate(
+                    ['staff_id' => $model->staff_id, 'date' => Carbon::now()->toDateString()],
+                    ['status' => Dict::ofCode(DictCodes::STAFF_STATUS_WORk)->first()->id]
+                );
+            }
+
         }
-        return redirect('mission');
+        return redirect('mission')->with('success','任务已结算');
     }
     /**
      * Store a newly created resource in storage.
@@ -227,6 +252,12 @@ class MissionController extends Controller
         return redirect('mission');
     }
 
+    public function showRemarkForm($id)
+    {
+        $mission = Mission::findOrfail($id);
+        $title = "备注";
+        return view('mission.remark',compact('title','mission'));
+    }
     /**
      * Display the specified resource.
      *

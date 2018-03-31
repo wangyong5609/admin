@@ -3,25 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Device;
-use App\Dict;
-use App\Enums\DictTypes;
 use App\Helper\Util;
 use App\Mission;
-use App\Post;
-use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Mission_template;
-use Amranidev\Ajaxis\Ajaxis;
-use URL;
 
-/**
- * Class Mission_templateController.
- *
- * @author  The scaffold-interface created at 2018-01-20 09:34:32am
- * @link  https://github.com/amranidev/scaffold-interface
- */
-class Mission_templateController extends Controller
+class DeviceController extends Controller
 {
     use Util;
     /**
@@ -31,9 +17,9 @@ class Mission_templateController extends Controller
      */
     public function index()
     {
-        $query = $this->applyFilters(Mission::query());
-        $templates = $query->where('is_template',true)->paginate($this->pageNumber());
-        return view('mission_template.index',compact('templates'));
+        $query = $this->applyFilters(Device::query());
+        $devices = $query->paginate($this->pageNumber());
+        return view('device.index',compact('devices'));
     }
 
     /**
@@ -43,10 +29,8 @@ class Mission_templateController extends Controller
      */
     public function create()
     {
-        $title = '创建新模板';
-        $posts = Post::get();
-        $devices = Device::all();
-        return view('mission_template.create',compact('title','posts','devices'));
+        $title = '添加新设备';
+        return view('device.create',compact('title'));
     }
 
     /**
@@ -57,31 +41,15 @@ class Mission_templateController extends Controller
      */
     public function store(Request $request)
     {
-        $mission_template = new Mission();
+        $mission_template = new Device();
 
-        
+
         $mission_template->name = $request->name;
 
-        
-        $mission_template->post_id = $request->post_id;
 
-        
-        $mission_template->description = $request->description;
-
-        
-        $mission_template->upper = $request->upper;
-
-        
-        $mission_template->sustain = $request->sustain;
-
-        
-        $mission_template->is_template = true;
-        $mission_template->device_id  = $request->device_id;
-
-        
-        
+        $mission_template->amount = $request->amount;
         $mission_template->save();
-        return redirect('mission_template');
+        return redirect('devices');
     }
 
     /**
@@ -112,16 +80,10 @@ class Mission_templateController extends Controller
      */
     public function edit($id,Request $request)
     {
-        $title = 'Edit - mission_template';
-        if($request->ajax())
-        {
-            return URL::to('mission_template/'. $id . '/edit');
-        }
+        $title = '修改设备';
 
-        $posts = Post::get();
-        $template = Mission::findOrfail($id);
-        $devices = Device::all();
-        return view('mission_template.edit',compact('title','template' ,'posts' ,'devices'));
+        $device = Device::findOrfail($id);
+        return view('device.edit',compact('title','device' ));
     }
 
     /**
@@ -133,14 +95,14 @@ class Mission_templateController extends Controller
      */
     public function update($id,Request $request)
     {
-        $mission_template = Mission::findOrfail($id);
+        $device = Device::findOrfail($id);
 
-        $mission_template->fill($request->intersect(app(Mission::class)->getFillable()));
-        
-        
-        $mission_template->save();
+        $device->fill($request->intersect(app(Device::class)->getFillable()));
 
-        return redirect('mission_template');
+
+        $device->save();
+
+        return redirect('devices');
     }
 
     /**
@@ -163,8 +125,11 @@ class Mission_templateController extends Controller
 
     public function destroy($id)
     {
-     	$mission_template = Mission::findOrfail($id);
-     	$mission_template->delete();
-        return redirect('mission_template');
+        $device = Device::findOrfail($id);
+        if (Mission::where('device_id',$id)->exists()){
+            return redirect('devices')->with('danger','此设备已使用，不可删除');
+        }
+        $device->delete();
+        return redirect('devices');
     }
 }

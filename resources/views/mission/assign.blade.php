@@ -19,6 +19,7 @@
                 <th>ID</th>
                 <th>任务名称</th>
                 <th>任务岗</th>
+                <th>设备</th>
                 <th>描述</th>
                 <th>任务量</th>
                 <th>任务数量上限</th>
@@ -30,6 +31,7 @@
                         <td>{!!$mission->id!!}  <input name="mission_id" type="hidden" value="{!!$mission->id!!}"></td>
                         <td><input name="mission_name" type="text" value="{!!$mission->name!!}"></td>
                         <td>{!!$mission->post_name!!}</td>
+                        <td>{!!$mission->device_name!!}</td>
                         <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
                         <td><input id="total_amount" type="number" :minlength="1"></td>
                         <td>{!!$mission->upper!!} <input name="upper" type="hidden" value="{!!$mission->upper!!}"></td>

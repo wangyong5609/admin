@@ -25,16 +25,35 @@ class Mission extends Model
 
     protected $fillable = [
         'name','post_id','status','description','start_time','end_time','status_name',
-        'complete_time','amount','staff_id','upper','sustain','is_template'
+        'complete_time','amount','staff_id','upper','sustain','is_template','device_id','remark','is_special'
     ];
 
     protected $appends = [
         'short_desc','priority_name','consuming'
     ];
+
+    /**
+     * 岗位
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function post()
     {
         return $this->belongsTo(Post::class,'post_id');
     }
+
+    /**
+     * 设备
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function device()
+    {
+        return $this->belongsTo(Device::class,'device_id');
+    }
+
+    /**
+     * 优先级
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function priorityDict()
     {
         return $this->belongsTo(Dict::class,'priority');
@@ -62,9 +81,7 @@ class Mission extends Model
 
     public function getShortDescAttribute()
     {
-        if (strlen($this->attributes['description']) > 60)
             return str_limit($this->attributes['description'],60);
-        return $this->attributes['description'];
     }
     public function getCompleteTimeAttribute()
     {
@@ -85,15 +102,39 @@ class Mission extends Model
         return $this->staff->name;
     }
 
-    public function getPostNameAttribute()
+    /**
+     * 预测完成时间
+     */
+    public function getForecastAttribute()
     {
-        return $this->post->name;
+        $time = $this->start_time ?
+            Carbon::parse($this->start_time)->addDay($this->sustain)->toDateString() :
+        Carbon::now()->addDay($this->sustain)->toDateString() ;
+        return $time;
     }
 
+    /**
+     * 岗位名称
+     * @return mixed
+     */
+    public function getPostNameAttribute()
+    {
+        return $this->post ? $this->post->name : '无';
+    }
+
+    /**
+     * 优先级名称
+     * @return mixed
+     */
     public function getPriorityNameAttribute()
     {
         return $this->priorityDict->name;
     }
+
+    /**
+     * 任务状态
+     * @return null
+     */
     public function getStatusNameAttribute()
     {
         if ($this->statusDict)
@@ -101,6 +142,10 @@ class Mission extends Model
         return null;
     }
 
+    public function getDeviceNameAttribute()
+    {
+        return $this->device ?$this->device->name : '无';
+    }
     public function scopeShow($query)
     {
         return $query->where('show',true)->whereNotIn('status',Dict::whereIn('code',['close'])->get()->pluck('id'));

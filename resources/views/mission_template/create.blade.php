@@ -2,7 +2,7 @@
 @section('title','新建模板')
 @section('other-css')
     {!! editor_css() !!}
-    <link href="//cdn.bootcss.com/select2/4.0.3/css/select2.min.css" rel="stylesheet">
+    {{--<link href="//cdn.bootcss.com/select2/4.0.3/css/select2.min.css" rel="stylesheet">--}}
 @endsection
 @section('content-header')
     <h1>
@@ -40,6 +40,17 @@
                         <select id="post_id" name = "post_id" class="js-example-placeholder-single form-control">
                             @foreach($posts as $post)
                             <option value="{{$post->id}}">{{$post->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>使用设备
+                            <small class="text-red">*</small>
+                        </label>
+                        <select id="device_id" name = "device_id" class="js-example-placeholder-single form-control">
+                            <option>不使用设备</option>
+                            @foreach($devices as $device)
+                                <option value="{{$device->id}}">{{$device->name}}</option>
                             @endforeach
                         </select>
                     </div>

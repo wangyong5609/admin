@@ -17,8 +17,8 @@ class DictsTableSeeder extends Seeder
             [
                 'type' => \App\Enums\DictTypes::STAFF_STATUS,
                 'items' => [
-                    '上班' => 'work',
-                    '出差' => 'business',
+                    '上班' => \App\Enums\DictCodes::STAFF_STATUS_WORk,
+                    '出差' => \App\Enums\DictCodes::STAFF_STATUS_BUSINESS,
                     '请假' => 'leave',
                 ],
             ],

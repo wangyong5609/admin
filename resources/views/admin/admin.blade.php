@@ -130,6 +130,15 @@
                     </a>
                 </li>
                 <li class="treeview">
+                    <a href="{{url('/devices')}}">
+                        <i class="fa fa-anchor"></i>
+                        <span>设备管理</span>
+                        <span class="pull-right-container">
+                             <i class="fa fa-angle-left pull-right"></i>
+                         </span>
+                    </a>
+                </li>
+                <li class="treeview">
                     <a href="{{url('/log')}}">
                         <i class="fa  fa-file-text-o"></i>
                         <span>操作日志</span>
@@ -138,18 +147,18 @@
                          </span>
                     </a>
                 </li>
-                {{--<li class="treeview">--}}
-                    {{--<a href="#">--}}
-                        {{--<i class="fa fa-user"></i>--}}
-                        {{--<span>个人设置</span>--}}
-                        {{--<span class="pull-right-container">--}}
-                             {{--<i class="fa fa-angle-left pull-right"></i>--}}
-                         {{--</span>--}}
-                    {{--</a>--}}
-                    {{--<ul class="treeview-menu">--}}
-                        {{--<li><a href="{{url('password')}}"><i class="fa fa-star-o"></i>修改密码</a></li>--}}
-                    {{--</ul>--}}
-                {{--</li>--}}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-user"></i>
+                        <span>个人设置</span>
+                        <span class="pull-right-container">
+                             <i class="fa fa-angle-left pull-right"></i>
+                         </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{{url('reset')}}"><i class="fa fa-star-o"></i>修改密码</a></li>
+                    </ul>
+                </li>
             </ul>
         </section>
         <!-- /.sidebar -->

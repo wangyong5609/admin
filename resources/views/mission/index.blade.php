@@ -46,15 +46,18 @@
                     <th>ID</th>
                     <th>任务名称</th>
                     <th>任务岗</th>
+                    <th>设备</th>
                     <th>任务状态</th>
                     <th>优先级</th>
                     <th>描述</th>
                     <th>起始时间</th>
                     <th>计划时间</th>
+                    <th>预测完成时间</th>
                     <th>已用时间 单位:天</th>
                     <th>实际完成时间</th>
                     <th>任务量</th>
                     <th>所属人员</th>
+                    <th>备注</th>
                     <th>操作</th>
                     </thead>
                     <tbody>
@@ -63,15 +66,18 @@
                             <td>{!!$mission->id!!}</td>
                             <td>{!!$mission->name!!}</td>
                             <td>{!!$mission->post_name!!}</td>
+                            <td>{!!$mission->device_name!!}</td>
                             <td>{!!$mission->status_name!!}</td>
                             <td>{!!$mission->priority_name!!}</td>
                             <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
                             <td>{!!$mission->start_time!!}</td>
                             <td>{!!$mission->sustain!!}天</td>
+                            <td>{!!$mission->forecast!!}</td>
                             <td>{!!$mission->consuming!!}</td>
                             <td>{!!$mission->complete_time!!}</td>
                             <td>{!!$mission->amount!!}</td>
                             <td>{!!$mission->staff_name!!}</td>
+                            <td title="{{$mission->remark}}">{!!str_limit($mission->remark,20)!!}</td>
                             <td>
                                 <div>
                                     <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
@@ -82,7 +88,7 @@
                                             <a href = '{{url('/mission/'.$mission->id.'/start')}}' @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1) style="color: red" @endif>  接单</a>
                                         @endif
                                     @endif
-
+                                    <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
                                 </div>
                             </td>
                         </tr>

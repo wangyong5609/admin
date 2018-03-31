@@ -13,7 +13,7 @@ class UserTableSeeder extends Seeder
     {
         \App\User::insert([
             'name' => '用户',
-            'username' =>'admin',
+            'email' =>'admin',
             'password' => bcrypt('123456')
         ]);
     }

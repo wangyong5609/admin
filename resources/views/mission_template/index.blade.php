@@ -33,6 +33,7 @@
                     <th>ID</th>
                     <th>任务名称</th>
                     <th>任务岗</th>
+                    <th>使用设备</th>
                     <th>任务描述</th>
                     <th>任务数量上限</th>
                     <th>任务时间</th>
@@ -44,6 +45,7 @@
                             <td>{!!$template->id!!}</td>
                             <td>{!!$template->name!!}</td>
                             <td>{!!$template->post_name!!}</td>
+                            <td>{!!$template->device_name!!}</td>
                             <td>{!!$template->description!!}</td>
                             <td>{!!$template->upper!!}</td>
                             <td>{!!$template->sustain!!}天</td>

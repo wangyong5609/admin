@@ -45,7 +45,9 @@
             @show
         </section>
         <section class="content">
+            @include('layouts._message')
             @section('content')
+
             @show
         </section>
     </div>
