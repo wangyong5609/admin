@@ -13,7 +13,7 @@
 @section('content')
     <div class="box-body table-responsive">
         <h4 >任务信息</h4>
-        @if( count($mission))
+        @if($mission)
             <table class="table table-hover table-bordered">
                 <thead>
                 <th>ID</th>
@@ -33,7 +33,7 @@
                         <td>{!!$mission->post_name!!}</td>
                         <td>{!!$mission->device_name!!}</td>
                         <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
-                        <td><input id="total_amount" type="number" :minlength="1"></td>
+                        <td><input id="total_amount" type="number" value="{!! $mission->total_amount !!}" :minlength="1"></td>
                         <td>{!!$mission->upper!!} <input name="upper" type="hidden" value="{!!$mission->upper!!}"></td>
                         <td><input disabled = "disabled" id = "sustain" name="sustain" style="border:0;width: 100px" value="{!!$mission->sustain!!}"></td>
                         <td>
@@ -63,6 +63,8 @@
                     <th>任务状态</th>
                     <th>上次任务开始时间</th>
                     <th>上次任务结束时间</th>
+                    <th>预计任务开始时间</th>
+                    <th>预计任务结束时间</th>
                     <th>任务量</th>
                     <th>任务所需时长</th>
                     </thead>
@@ -76,12 +78,17 @@
                             <td>{!!$staff->mission_status_name!!}</td>
                             <td>{!!$staff->last_mission_start!!}</td>
                             <td>{!!$staff->last_mission_end!!}</td>
-                            <td>
-                                <input id = "amount" name="amount" readonly="readonly" style="border:0;width: 100px">
-                            </td>
-                            <td>
-                                <input id = "need_time" name="need_time"  readonly="readonly" style="border:0;width: 100px">
-                            </td>
+                            <td>{!!$staff->plan_mission_start!!}</td>
+                            <td><input id="plan_mission_end" name="plan_mission_end" value="{!!$staff->plan_mission_end!!}" readonly="readonly" style="border:0"></td>
+                            <td><input id="amount" name="amount" value="{!!$staff->amount!!}" readonly="readonly" style="border:0;width: 100px"></td>
+
+                            <td><input id="need_time" name="need_time" value="{!!$staff->need_time!!}天"  align="right" readonly="readonly" style="border:0;width: 100px;"></td>
+                            {{--<td>--}}
+                                {{--<input id = "amount" name="amount" readonly="readonly" style="border:0;width: 100px">--}}
+                            {{--</td>--}}
+                            {{--<td>--}}
+                                {{--<input id = "need_time" name="need_time"  readonly="readonly" style="border:0;width: 100px">--}}
+                            {{--</td>--}}
                         </tr>
                     @endforeach
                     </tbody>
@@ -100,47 +107,29 @@
 <script>
     $(function(){
         var serachtimer;
-        $('#total_amount').bind('input propertychange', function(item) {
-
-            clearTimeout(serachtimer);
-            serachtimer=setTimeout(function(){
+        $('#total_amount').bind('keypress',function(event) {
+            if (event.keyCode == "13") {
+                var new_url = document.location.origin+document.location.pathname;
+                //console.log(document.location.origin+document.location.pathname);
                 var total = $(" input[ id='total_amount' ] ").val();
-                var sustain = $(" input[ id='sustain' ] ").val();
-                var upper = $(" input[ name='upper' ] ").val();
-                var need = sustain/upper;
-                Array.from($('input[id="amount"]')).forEach(function(item) {
-                    item.value = null;
-
-                    var amount ;
-                    if (total <=0 ) return false;
-                    var remainder = total - upper;
-                    if (remainder <= 0){
-                        amount = total;
-                    }else {
-                        amount = upper;
-                    }
-                    item.value = amount;
-                    console.log(need);
-                    console.log(amount);
-                    $(item).closest('tr').find('input[name="need_time"]').val(Math.ceil((need * amount))+'天');
-                    total = total-upper;
-                })
-            },500)
-
-        });
-
-    })
+                new_url = new_url+"?total_amount="+total;
+                window.location.replace(new_url);
+            }
+        })
+    });
 
     var arr = [];
     var add = function add() {
 
         Array.from($('input[name="amount"]')).forEach(function(item) {
             var amount = item.value;
-            if (amount){
+            if (amount && amount >0){
                 var staff_id = $(item).closest('tr').find('.staff_id').html();
+                var plan_end_time =$(item).closest('tr').find("#plan_mission_end").val();
                 var data = {
                     'amount': amount,
                     'staff_id' :staff_id,
+                    'plan_end_time':plan_end_time,
                 }
                 arr.push(data);
             }

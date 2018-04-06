@@ -33,6 +33,8 @@ class Missions extends Migration
         $table->dateTime('start_time')->nullable();
         
         $table->dateTime('end_time')->nullable();
+
+        $table->dateTime('plan_end_time');
         
         $table->dateTime('complete_time')->nullable();
         

@@ -68,7 +68,7 @@ class Staff extends Model
             return $doing->start_time;
         $mission = Mission::where('staff_id',$this->attributes['id'])->whereNotNull('complete_time')->orderBy('updated_at','desc')->first();
 
-        return empty($mission) ?  '无' : $mission->start_time;
+        return empty($mission) ?  '' : $mission->start_time;
 
     }
 
@@ -76,7 +76,7 @@ class Staff extends Model
     {
         $mission = Mission::where('staff_id',$this->attributes['id'])->whereNotNull('complete_time')->orderBy('updated_at','desc')->first();
 
-        return empty($mission) ?  '无' : $mission->complete_time;
+        return empty($mission) ?  '' : $mission->complete_time;
 
     }
     public function posts()

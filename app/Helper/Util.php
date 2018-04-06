@@ -69,7 +69,10 @@ trait Util
             $start = $start->addDay(1);
             //info($start->toDateString().$flag?'上班':'不上班');
         }
-        while($end->gte($start));
-        return $count;
+        while($end->gt($start));
+        $hours=floor((strtotime($start)-strtotime($end))%86400/3600);
+        $Fine_day=number_format($hours/24,2);
+        if($count==0)$Fine_day=0;
+        return $count-$Fine_day;
     }
 }

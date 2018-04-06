@@ -53,7 +53,7 @@
                     <th>起始时间</th>
                     <th>计划时间</th>
                     <th>预测完成时间</th>
-                    <th>已用时间 单位:天</th>
+                    <th>已用时间</th>
                     <th>实际完成时间</th>
                     <th>任务量</th>
                     <th>所属人员</th>
@@ -72,8 +72,8 @@
                             <td title="{{$mission->description}}">{!!$mission->short_desc!!}</td>
                             <td>{!!$mission->start_time!!}</td>
                             <td>{!!$mission->sustain!!}天</td>
-                            <td>{!!$mission->forecast!!}</td>
-                            <td>{!!$mission->consuming!!}</td>
+                            <td>{!!$mission->plan_end_time!!}</td>
+                            <td>{!!$mission->consuming!!}天</td>
                             <td>{!!$mission->complete_time!!}</td>
                             <td>{!!$mission->amount!!}</td>
                             <td>{!!$mission->staff_name!!}</td>

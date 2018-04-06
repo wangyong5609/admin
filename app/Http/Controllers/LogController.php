@@ -27,12 +27,17 @@ class LogController extends Controller
     public function index(Request $request)
     {
         $mission_name = $request->get('mission_name');
+
         if ($mission_name)
-            $logs = Log::whereHas('mission', function ($query)use($mission_name) {
-                $query->where('name', 'like', "%$mission_name%");
-            })->paginate($this->pageNumber());
+            $logs =
+                Log::whereHas('mission', function ($query)use($mission_name)
+                {
+                    $query->where('name', 'like', "%$mission_name%");
+                })
+                    ->orderby("id","desc")
+                ->paginate($this->pageNumber());
         else
-            $logs = Log::paginate($this->pageNumber());
+            $logs = Log::orderby("id","desc")->paginate($this->pageNumber());
         return view('log.index',compact('logs'));
     }
 

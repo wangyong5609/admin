@@ -73,7 +73,7 @@
                     <img src="{{url('dist/img/avatar.jpeg')}}" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
-                    <p>LaravelChen</p>
+                    <p>管理员</p>
                     <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                 </div>
             </div>
@@ -172,7 +172,7 @@
         <div class="pull-right hidden-xs">
             <b>Version</b> 1.0
         </div>
-        <strong>Admin@2018-2-1<a href="#">Laravel</a>.</strong>
+        <strong>{{ env('CO_NAME','Laravel') }}</strong>
     </footer>
 @endsection
 {{--/底部--}}
@@ -193,8 +193,8 @@
                         <a href="javascript:void(0);">
                             <i class="menu-icon fa fa-birthday-cake bg-red"></i>
                             <div class="menu-info">
-                                <h4 class="control-sidebar-subheading">Laravel</h4>
-                                <p>一个热爱技术的小青年</p>
+                                <h4 class="control-sidebar-subheading">无项目</h4>
+                                <p>无项目</p>
                             </div>
                         </a>
                     </li>

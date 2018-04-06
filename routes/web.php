@@ -55,6 +55,7 @@ Route::group(['middleware'=> ['web','auth']],function(){
 
 });
 
+Route::get('/test','\App\Http\Controllers\TestController@index');
 
 //等同于
 // Authentication Routes...
