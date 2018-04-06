@@ -82,7 +82,7 @@
                             <td><input id="plan_mission_end" name="plan_mission_end" value="{!!$staff->plan_mission_end!!}" readonly="readonly" style="border:0"></td>
                             <td><input id="amount" name="amount" value="{!!$staff->amount!!}" readonly="readonly" style="border:0;width: 100px"></td>
 
-                            <td><input id="need_time" name="need_time" value="{!!$staff->need_time!!}" readonly="readonly" style="border:0;width: 100px"></td>
+                            <td><input id="need_time" name="need_time" value="{!!$staff->need_time!!}天"  align="right" readonly="readonly" style="border:0;width: 100px;"></td>
                             {{--<td>--}}
                                 {{--<input id = "amount" name="amount" readonly="readonly" style="border:0;width: 100px">--}}
                             {{--</td>--}}
@@ -116,34 +116,6 @@
                 window.location.replace(new_url);
             }
         })
-//        $('#total_amount').bind('input propertychange', function(item) {
-//            clearTimeout(serachtimer);
-//            serachtimer=setTimeout(function(){
-//                var total = $(" input[ id='total_amount' ] ").val();
-//                var sustain = $(" input[ id='sustain' ] ").val();
-//                var upper = $(" input[ name='upper' ] ").val();
-//                var need = sustain/upper;
-//                Array.from($('input[id="amount"]')).forEach(function(item) {
-//                    item.value = null;
-//
-//                    var amount ;
-//                    if (total <=0 ) return false;
-//                    var remainder = total - upper;
-//                    if (remainder <= 0){
-//                        amount = total;
-//                    }else {
-//                        amount = upper;
-//                    }
-//                    item.value = amount;
-//                    console.log(need);
-//                    console.log(amount);
-//                    $(item).closest('tr').find('input[name="need_time"]').val(Math.ceil((need * amount))+'天');
-//                    total = total-upper;
-//                })
-//            },500)
-//
-//        });
-
     });
 
     var arr = [];

@@ -28,12 +28,20 @@ class Log extends Model
 
     public function getMissionNameAttribute()
     {
-        return $this->mission->name;
+        $tmp = $this->mission;
+        if($tmp){
+            return $this->mission->name;
+        }
+        return "未找到任务";
 	}
 
     public function getMissionDescAttribute()
     {
-        return $this->mission->description;
+        $tmp = $this->mission;
+        if($tmp){
+            return $tmp->description;
+        }
+        return "未找到任务";
     }
 
     public function getOriginalAttribute()

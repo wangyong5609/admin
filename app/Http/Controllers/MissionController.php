@@ -79,16 +79,29 @@ class MissionController extends Controller
             return $model;
         });
         $staffs = $post ? $post->staffs(): Staff::query();
-        $staffs = $staffs->orderBy('status')->orderBy('mission_status','desc')->orderBy('mission_rt')->get();
+        $staffs = $staffs->get();
+//        $staffs = $staffs
+//            ->orderBy('status')
+//            ->orderBy('mission_status','desc')
+//            ->orderBy('mission_rt')
+//            ->get();
         $priority = Dict::ofType(DictTypes::MISSION_PRIORITY)->get();
 
         if ($mission->device){
             $count = Mission::where('status',Dict::ofCode(DictCodes::MISSION_STATUS_DOING)->first()->id)
                 ->where('device_id',$mission->device_id)->count();
             $number = ($mission->device->amount - $count) >= 0 ? ($mission->device->amount - $count): 0;
-            \Session::flash('message',"$count 台 ".$mission->device->name.' 正在使用中,剩余可用:'.$number);
+            \Session::flash('message',"$count 台".$mission->device->name.'正在使用中,剩余可用:'.$number."台");
         }
-        $tmp_total_amount=$total_amount;
+
+        $staffs=$staffs
+            ->sortBy("last_mission_end")
+            ->sortBy('mission_rt')
+            ->sortBy('mission_status')
+            ->sortBy("status")
+            ->values();
+
+        $tmp_total_amount=(int)$total_amount;
         $upper = $mission->upper;
         $per_time = $mission->sustain  /$mission->upper ;
         for($i=0;$i<$staffs->count();$i++){
@@ -97,7 +110,7 @@ class MissionController extends Controller
             $tmp_total_amount-=$staff->amount;
             $staff->need_time=ceil($per_time*$staff->amount);
             if($staff->amount>0){
-                if($staff->last_mission_end == "无"){
+                if($staff->last_mission_end == ""){
                     $staff->plan_mission_start=date("Y-m-d H:i:s",time());
                 }else{
                     $staff->plan_mission_start=$staff->last_mission_end ;
@@ -110,7 +123,6 @@ class MissionController extends Controller
             }
         }
         $mission->total_amount = $total_amount?$total_amount:0;
-
         return view('mission.assign',compact('mission','staffs','priority'));
     }
 

@@ -71,6 +71,8 @@ trait Util
         }
         while($end->gt($start));
         $hours=floor((strtotime($start)-strtotime($end))%86400/3600);
-        return $count-number_format($hours/24,2);
+        $Fine_day=number_format($hours/24,2);
+        if($count==0)$Fine_day=0;
+        return $count-$Fine_day;
     }
 }
