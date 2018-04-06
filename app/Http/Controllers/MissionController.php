@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Libs\BusinessDaysCalculatorHelper;
 use App\Dict;
 use App\Enums\DictCodes;
 use App\Enums\DictTypes;
@@ -58,8 +59,12 @@ class MissionController extends Controller
         return view('mission.create',compact('posts','arithmetic','tem'));
     }
 
-    public function assign($id)
+    public function assign($id,Request $request)
     {
+        $total_amount = $request->get("total_amount");//change asign count
+        if($total_amount!=null){//need to calc
+
+        }
         $mission = Mission::findOrfail($id);
         $post = Post::find($mission->post_id);
 
@@ -83,6 +88,28 @@ class MissionController extends Controller
             $number = ($mission->device->amount - $count) >= 0 ? ($mission->device->amount - $count): 0;
             \Session::flash('message',"$count 台 ".$mission->device->name.' 正在使用中,剩余可用:'.$number);
         }
+        $tmp_total_amount=$total_amount;
+        $upper = $mission->upper;
+        $per_time = $mission->sustain  /$mission->upper ;
+        for($i=0;$i<$staffs->count();$i++){
+            $staff=$staffs[$i];
+            $staff->amount=$tmp_total_amount>$upper?$upper:$tmp_total_amount;
+            $tmp_total_amount-=$staff->amount;
+            $staff->need_time=ceil($per_time*$staff->amount);
+            if($staff->amount>0){
+                if($staff->last_mission_end == "无"){
+                    $staff->plan_mission_start=date("Y-m-d H:i:s",time());
+                }else{
+                    $staff->plan_mission_start=$staff->last_mission_end ;
+                }
+                $bb=new BusinessDaysCalculatorHelper();
+                $staff->plan_mission_end=$bb->calcBusinessDay(date("Y-m-d H:i:s",time()),$staff->need_time);
+            }else{
+                $staff->plan_mission_start="无";
+                $staff->plan_mission_end="无";
+            }
+        }
+        $mission->total_amount = $total_amount?$total_amount:0;
 
         return view('mission.assign',compact('mission','staffs','priority'));
     }
@@ -109,6 +136,7 @@ class MissionController extends Controller
             $insert['priority'] = $priority;
             $insert['is_template'] = false;
             $insert['sustain'] = ceil(($mission->sustain / $mission->upper) * $datum['amount']);
+            $insert['plan_end_time']  = $datum['plan_end_time'];
             $log_mission_id = Mission::insertGetId($insert);
             $data = [
                 'mission_id' => $log_mission_id,
@@ -133,26 +161,30 @@ class MissionController extends Controller
         //判断是否有任务正在进行
         $doing_mission = (clone $query)->where('status',Dict::ofCode('doing')->first()->id)->first();
         $wait = Dict::query()->ofCode('wait')->first()->id;
-        if ($doing_mission && $doing_mission->priority > $model->priority){
+        $bb=new BusinessDaysCalculatorHelper();
+        if ($doing_mission && $doing_mission->priority >= $model->priority){//有更优先的任务，当前任务等待
             $model->status = $wait;
-        }else{
-            if ($doing_mission && $doing_mission->priority < $model->priority){
-                $doing_mission->status = $wait;
-                app(MissionSwitch::class)->missionOff($doing_mission->id);
-                $doing_mission->save();
-            }
+            $model->plan_end_time = $bb->calcBusinessDay($doing_mission->plan_end_time,$model->sustain);
+
+        }else{//执行当前任务
             app(MissionSwitch::class)->missionOn($model->id);
             $model->status = Dict::query()->ofCode('doing')->first()->id;
+            $model->plan_end_time = $bb->calcBusinessDay(date("Y-m-d H:i:s",time()),$model->sustain);
 
             $staff = Staff::find($model->staff_id);
             $staff->mission_status = Dict::query()->ofCode('missioning')->first()->id;
             $staff->save();
-
             if ($model->is_special == true){
                 StaffWorkLog::updateOrCreate(
                     ['staff_id' => $staff->id, 'date' => Carbon::now()->toDateString()],
                     ['status' => Dict::ofCode(DictCodes::STAFF_STATUS_BUSINESS)->first()->id]
                 );
+            }
+            if ($doing_mission ){
+                $doing_mission->plan_end_time=$bb->calcBusinessDay($model->plan_end_time,$doing_mission->sustain);
+                $doing_mission->status = $wait;
+                app(MissionSwitch::class)->missionOff($doing_mission->id);
+                $doing_mission->save();
             }
         }
         $model->start_time = Carbon::now()->toDateTimeString();
@@ -167,20 +199,17 @@ class MissionController extends Controller
     {
         $model = Mission::findOrFail($id);
         $query = Mission::query()->where('staff_id',$model->staff_id);
-
         $model->status = Dict::query()->ofCode('complete')->first()->id;
         $model->complete_time = Carbon::now()->toDateTimeString();
         $model->save();
-
         app(MissionSwitch::class)->missionOff($model->id);
-
         $wait_mission = (clone $query)->where('status',Dict::ofCode('wait')->first()->id)->orderBy('priority','desc')->first();
         if ($wait_mission ){
             $wait_mission->status = Dict::query()->ofCode('doing')->first()->id;
+            $bb=new BusinessDaysCalculatorHelper();
+            $wait_mission->plan_end_time=$bb->calcBusinessDay($wait_mission->start_time,$wait_mission->sustain-$wait_mission->getConsumingAttribute());
             $wait_mission->save();
-
             app(MissionSwitch::class)->missionOn($wait_mission->id);
-
             if ($wait_mission->is_special == true){
                 StaffWorkLog::updateOrCreate(
                     ['staff_id' => $wait_mission->staff_id, 'date' => Carbon::now()->toDateString()],
@@ -198,7 +227,6 @@ class MissionController extends Controller
                     ['status' => Dict::ofCode(DictCodes::STAFF_STATUS_WORk)->first()->id]
                 );
             }
-
         }
         return redirect('mission')->with('success','任务已结算');
     }

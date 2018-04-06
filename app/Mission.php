@@ -24,7 +24,7 @@ class Mission extends Model
     protected $table = 'missions';
 
     protected $fillable = [
-        'name','post_id','status','description','start_time','end_time','status_name',
+        'name','post_id','status','description','start_time','end_time','plan_end_time','status_name',
         'complete_time','amount','staff_id','upper','sustain','is_template','device_id','remark','is_special'
     ];
 
