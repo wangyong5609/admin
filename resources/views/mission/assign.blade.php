@@ -25,6 +25,7 @@
                 <th>任务数量上限</th>
                 <th>任务时间(天)</th>
                 <th>优先级</th>
+                <th>附件</th>
                 </thead>
                 <tbody>
                     <tr>
@@ -40,6 +41,14 @@
                             <select id="priority" name = "priority" class="js-example-placeholder-single form-control">
                                 @foreach($priority as $dict)
                                     <option value="{{$dict->id}}">{{$dict->name}}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <select id="file" name = "file" class="js-example-placeholder-single form-control">
+                                <option value="">无文件</option>
+                                @foreach($files as $file)
+                                    <option value="{{$file->uuid}}">{{$file->originalename}}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -61,12 +70,13 @@
                     <th>姓名</th>
                     <th>工作状态</th>
                     <th>任务状态</th>
-                    <th>上次任务开始时间</th>
-                    <th>上次任务结束时间</th>
-                    <th>预计任务开始时间</th>
-                    <th>预计任务结束时间</th>
+                    <th>上次任务<br>开始时间</th>
+                    <th>上次任务<br>结束时间</th>
+                    <th>预计任务<br>开始时间</th>
+                    <th>预计任务<br>结束时间</th>
                     <th>任务量</th>
                     <th>任务所需时长</th>
+                    <th>备注</th>
                     </thead>
                     <tbody>
                     @foreach($staffs as $staff)
@@ -81,8 +91,8 @@
                             <td>{!!$staff->plan_mission_start!!}</td>
                             <td><input id="plan_mission_end" name="plan_mission_end" value="{!!$staff->plan_mission_end!!}" readonly="readonly" style="border:0"></td>
                             <td><input id="amount" name="amount" value="{!!$staff->amount!!}" readonly="readonly" style="border:0;width: 100px"></td>
-
                             <td><input id="need_time" name="need_time" value="{!!$staff->need_time!!}天"  align="right" readonly="readonly" style="border:0;width: 100px;"></td>
+                            <td><input id="remark" name="remark" value="" style="width: 100px;"></td>
                             {{--<td>--}}
                                 {{--<input id = "amount" name="amount" readonly="readonly" style="border:0;width: 100px">--}}
                             {{--</td>--}}
@@ -105,6 +115,7 @@
 @stop
 <script src="{{url('dist/js/jquery.min.js')}}"></script>
 <script>
+
     $(function(){
         var serachtimer;
         $('#total_amount').bind('keypress',function(event) {
@@ -126,10 +137,12 @@
             if (amount && amount >0){
                 var staff_id = $(item).closest('tr').find('.staff_id').html();
                 var plan_end_time =$(item).closest('tr').find("#plan_mission_end").val();
+                var remark = $(item).closest('tr').find("#remark").val();
                 var data = {
                     'amount': amount,
                     'staff_id' :staff_id,
                     'plan_end_time':plan_end_time,
+                    'remark':remark,
                 }
                 arr.push(data);
             }
@@ -140,6 +153,7 @@
         $.post(url, {
             'data' : arr,
             'priority' :$("#priority").find("option:selected").val(),
+            'file' :$("#file").find("option:selected").val(),
             'mission_name' : $(" input[ name='mission_name' ] ").val()
         }, function(res) {
             if (res.code == 400){

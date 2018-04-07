@@ -57,6 +57,7 @@
                     <th>实际完成时间</th>
                     <th>任务量</th>
                     <th>所属人员</th>
+                    <th>文件</th>
                     <th>备注</th>
                     <th>操作</th>
                     </thead>
@@ -77,6 +78,10 @@
                             <td>{!!$mission->complete_time!!}</td>
                             <td>{!!$mission->amount!!}</td>
                             <td>{!!$mission->staff_name!!}</td>
+                            <td><a href="{{url('/files/download/'.$mission->file_uuid)}}">
+                                    {!!$mission->filename!!}
+                                </a>
+                            </td>
                             <td title="{{$mission->remark}}">{!!str_limit($mission->remark,20)!!}</td>
                             <td>
                                 <div>

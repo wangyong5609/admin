@@ -30,7 +30,7 @@ class Mission extends Model
     ];
 
     protected $appends = [
-        'short_desc','priority_name','consuming'
+        'short_desc','priority_name','consuming',"filename"
     ];
 
     /**
@@ -64,6 +64,16 @@ class Mission extends Model
         return $this->belongsTo(Dict::class,'status');
     }
 
+    public function getFilenameAttribute()
+    {
+        if(empty($this->file_uuid)){
+            return "";
+        }
+        $filename = Files::where('uuid',$this->file_uuid)->first();
+        if($filename)
+            return $filename->originalename;
+        return "";
+    }
 
 
     /**

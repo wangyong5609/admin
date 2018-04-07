@@ -53,9 +53,13 @@ Route::group(['middleware'=> ['web','auth']],function(){
     Route::get('reset', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-});
+    Route::post('/files/upload', '\App\Http\Controllers\FilesController@upload');
+    Route::get('/files/download/{uuid}', '\App\Http\Controllers\FilesController@download');
+    Route::get('/files/delete/{uuid}', '\App\Http\Controllers\FilesController@delete');
 
-Route::get('/test','\App\Http\Controllers\TestController@index');
+
+    Route::get('/files', '\App\Http\Controllers\FilesController@index');
+});
 
 //等同于
 // Authentication Routes...
