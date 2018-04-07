@@ -57,6 +57,7 @@
                     <th>实际完成时间</th>
                     <th>任务量</th>
                     <th>所属人员</th>
+                    <th>文件</th>
                     <th>备注</th>
                     <th>操作</th>
                     </thead>
@@ -77,6 +78,10 @@
                             <td>{!!$mission->complete_time!!}</td>
                             <td>{!!$mission->amount!!}</td>
                             <td>{!!$mission->staff_name!!}</td>
+                            <td><a href="{{url('/files/download/'.$mission->file_uuid)}}">
+                                    {!!$mission->filename!!}
+                                </a>
+                            </td>
                             <td title="{{$mission->remark}}">{!!str_limit($mission->remark,20)!!}</td>
                             <td>
                                 <div>
@@ -85,7 +90,12 @@
                                         @if($mission->start_time)
                                             <a href = '{{url('/mission/'.$mission->id.'/complete')}}'>  完成</a>
                                         @else
-                                            <a href = '{{url('/mission/'.$mission->id.'/start')}}' @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1) style="color: red" @endif>  接单</a>
+                                            <a href = '{{url('/mission/'.$mission->id.'/start')}}'
+                                            @if((\App\Helper\Util::diffDateOfDays(new \Carbon\Carbon($mission->created_at),new \Carbon\Carbon(date("Y-m-d H:i:s",time())),$mission->staff_id)) >= 1)
+                                                 style="color: red" >  超时接单</a>
+                                            @else
+                                                > 接单</a>
+                                            @endif
                                         @endif
                                     @endif
                                     <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>

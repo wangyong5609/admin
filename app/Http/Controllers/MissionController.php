@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Mission;
 use URL;
+use App\Files;
 
 /**
  * Class MissionController.
@@ -36,8 +37,14 @@ class MissionController extends Controller
     public function index(Request $request)
     {
         $title = 'Index - mission';
-        $query = $this->applyFilters(Mission::query()->where('is_template',false));
-        $missions = $query->show()->orderBy('status')->orderBy('created_at','desc')->paginate($this->pageNumber());
+        $query = $this->applyFilters(
+            Mission::query()->where('is_template',false)
+        );
+        $missions = $query
+            ->show()
+            ->orderBy('status')
+            ->orderBy('created_at','desc')
+            ->paginate($this->pageNumber());
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();
         return view('mission.index',compact('missions','title','posts','status','template'));
@@ -123,7 +130,9 @@ class MissionController extends Controller
             }
         }
         $mission->total_amount = $total_amount?$total_amount:0;
-        return view('mission.assign',compact('mission','staffs','priority'));
+
+        $files = Files::orderBy("id","desc")->take(10)->get();
+        return view('mission.assign',compact('mission','staffs','priority',"files"));
     }
 
     /**
@@ -138,17 +147,24 @@ class MissionController extends Controller
         $mission = Mission::findOrFail($id);
         $data = $request->get('data');
         $priority = $request->priority;
+        $file_uuid  = $request->file;
         if (empty($data))
             return ['code' => 400,'data' => '分配失败'];
         foreach ($data as $datum){
             $insert = array_merge($mission->getAttributes(),$datum);
             unset($insert['id']);
+//            unset($insert['created_at']);
+//            unset($insert['updated_at']);
+            $insert['created_at']=date("Y-m-d H:i:s",time());
+            $insert['updated_at']=date("Y-m-d H:i:s",time());
             $insert['status'] = Dict::ofCode('new')->first()->id;
             $insert['name'] = $this->getMissionName($request->mission_name);
             $insert['priority'] = $priority;
             $insert['is_template'] = false;
             $insert['sustain'] = ceil(($mission->sustain / $mission->upper) * $datum['amount']);
             $insert['plan_end_time']  = $datum['plan_end_time'];
+            $insert['file_uuid']  = $file_uuid;
+            $insert['remark']  = $datum['remark'];
             $log_mission_id = Mission::insertGetId($insert);
             $data = [
                 'mission_id' => $log_mission_id,

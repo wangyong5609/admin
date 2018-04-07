@@ -53,7 +53,7 @@ trait Util
         return $name.'-'.self::getSeriesNumber(Mission::where('is_template',false)->count()+1);
     }
 
-    public function diffDateOfDays(Carbon $start,Carbon $end,$staff_id)
+    static public function diffDateOfDays(Carbon $start,Carbon $end,$staff_id)
     {
         if ($end->lte($start))
             return 0;

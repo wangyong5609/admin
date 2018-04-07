@@ -98,7 +98,7 @@
                         <i class="fa  fa-check-square"></i>
                         <span>当前状态</span>
                         <span class="pull-right-container">
-                             <i class="fa fa-angle-left pull-right"></i>
+                             <i class="fa fa-angle-right pull-right"></i>
                          </span>
                     </a>
                 </li>
@@ -107,7 +107,7 @@
                         <i class="fa   fa-cube"></i>
                         <span>任务列表</span>
                         <span class="pull-right-container">
-                             <i class="fa fa-angle-left pull-right"></i>
+                             <i class="fa fa-angle-right pull-right"></i>
                          </span>
                     </a>
                 </li>
@@ -116,7 +116,7 @@
                         <i class="fa fa-user"></i>
                         <span>人员列表</span>
                         <span class="pull-right-container">
-                             <i class="fa fa-angle-left pull-right"></i>
+                             <i class="fa fa-angle-right pull-right"></i>
                          </span>
                     </a>
                 </li>
@@ -125,7 +125,7 @@
                         <i class="fa fa-anchor"></i>
                         <span>任务模板</span>
                         <span class="pull-right-container">
-                             <i class="fa fa-angle-left pull-right"></i>
+                             <i class="fa fa-angle-right pull-right"></i>
                          </span>
                     </a>
                 </li>
@@ -134,7 +134,16 @@
                         <i class="fa fa-anchor"></i>
                         <span>设备管理</span>
                         <span class="pull-right-container">
-                             <i class="fa fa-angle-left pull-right"></i>
+                             <i class="fa fa-angle-right pull-right"></i>
+                         </span>
+                    </a>
+                </li>
+                <li class="treeview">
+                    <a href="{{url('/files')}}">
+                        <i class="fa fa-user"></i>
+                        <span>文件管理</span>
+                        <span class="pull-right-container">
+                             <i class="fa fa-angle-right pull-right"></i>
                          </span>
                     </a>
                 </li>
@@ -143,7 +152,7 @@
                         <i class="fa  fa-file-text-o"></i>
                         <span>操作日志</span>
                         <span class="pull-right-container">
-                             <i class="fa fa-angle-left pull-right"></i>
+                             <i class="fa fa-angle-right pull-right"></i>
                          </span>
                     </a>
                 </li>
@@ -152,7 +161,7 @@
                         <i class="fa fa-user"></i>
                         <span>个人设置</span>
                         <span class="pull-right-container">
-                             <i class="fa fa-angle-left pull-right"></i>
+                             <i class="fa fa-angle-right pull-right"></i>
                          </span>
                     </a>
                     <ul class="treeview-menu">
