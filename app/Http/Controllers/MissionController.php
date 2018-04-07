@@ -143,6 +143,10 @@ class MissionController extends Controller
         foreach ($data as $datum){
             $insert = array_merge($mission->getAttributes(),$datum);
             unset($insert['id']);
+//            unset($insert['created_at']);
+//            unset($insert['updated_at']);
+            $insert['created_at']=date("Y-m-d H:i:s",time());
+            $insert['updated_at']=date("Y-m-d H:i:s",time());
             $insert['status'] = Dict::ofCode('new')->first()->id;
             $insert['name'] = $this->getMissionName($request->mission_name);
             $insert['priority'] = $priority;

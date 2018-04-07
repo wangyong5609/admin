@@ -19,8 +19,9 @@ class Mission extends Model
 	use SoftDeletes,Util;
 
 	protected $dates = ['deleted_at'];
-    
-	
+
+    public $timestamps = true;
+
     protected $table = 'missions';
 
     protected $fillable = [

@@ -85,7 +85,12 @@
                                         @if($mission->start_time)
                                             <a href = '{{url('/mission/'.$mission->id.'/complete')}}'>  完成</a>
                                         @else
-                                            <a href = '{{url('/mission/'.$mission->id.'/start')}}' @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1) style="color: red" @endif>  接单</a>
+                                            <a href = '{{url('/mission/'.$mission->id.'/start')}}'
+                                            @if((\App\Helper\Util::diffDateOfDays(new \Carbon\Carbon($mission->created_at),new \Carbon\Carbon(date("Y-m-d H:i:s",time())),$mission->staff_id)) >= 1)
+                                                 style="color: red" >  超时接单</a>
+                                            @else
+                                                > 接单</a>
+                                            @endif
                                         @endif
                                     @endif
                                     <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
