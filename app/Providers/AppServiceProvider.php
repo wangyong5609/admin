@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Mission;
 use App\Observers\MissionObserver;
 use App\Observers\StaffObserver;
+use App\Observers\UserObserver;
 use App\Staff;
+use App\User;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         \Schema::defaultStringLength(191);
         Mission::observe(MissionObserver::class);
         Staff::observe(StaffObserver::class);
+        User::observe(UserObserver::class);
     }
 
     /**

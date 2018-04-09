@@ -20,7 +20,7 @@ class Staff extends Model
 
 	protected $dates = ['deleted_at'];
     protected $fillable = [
-        'name','status','description'
+        'name','status','description','phone'
     ];
 	
     protected $table = 'staffs';
@@ -84,6 +84,10 @@ class Staff extends Model
         return $this->belongsToMany(Post::class);
     }
 
+    public function user()
+    {
+        return $this->hasOne(User::class,'staff_id');
+    }
     public function missionStatusDict()
     {
         return $this->belongsTo(Dict::class,'mission_status');

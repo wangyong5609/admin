@@ -17,6 +17,10 @@ use Illuminate\Http\Request;
 class StaffWorkLogController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('no_access');
+    }
     public function store(Request $request)
     {
         $staffs = $request->staff_id;

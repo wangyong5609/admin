@@ -48,7 +48,7 @@
                             <small class="text-red">*</small>
                         </label>
                         <select id="device_id" name = "device_id" class="js-example-placeholder-single form-control">
-                            <option>不使用设备</option>
+                            <option value=''>不使用设备</option>
                             @foreach($devices as $device)
                                 <option value="{{$device->id}}">{{$device->name}}</option>
                             @endforeach

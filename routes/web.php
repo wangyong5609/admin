@@ -56,9 +56,10 @@ Route::group(['middleware'=> ['web','auth']],function(){
     Route::post('/files/upload', '\App\Http\Controllers\FilesController@upload');
     Route::get('/files/download/{uuid}', '\App\Http\Controllers\FilesController@download');
     Route::get('/files/delete/{uuid}', '\App\Http\Controllers\FilesController@delete');
+	Route::get('/files', '\App\Http\Controllers\FilesController@index');
+	
+	Route::resource('users', 'UsersController', ['only' => ['show', 'update', 'edit']]);
 
-
-    Route::get('/files', '\App\Http\Controllers\FilesController@index');
 });
 
 //等同于

@@ -98,7 +98,10 @@
                                             @endif
                                         @endif
                                     @endif
-                                    <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
+                                        <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
+                                    @if(Auth::user()->hasRole('admin'))
+                                    <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
+                                        @endif
                                 </div>
                             </td>
                         </tr>

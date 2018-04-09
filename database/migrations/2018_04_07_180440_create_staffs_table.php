@@ -16,6 +16,7 @@ class CreateStaffsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name', 191);
+            $table->string('phone', 11)->nullable();
 			$table->string('status', 191)->nullable();
 			$table->string('mission_status', 191)->nullable();
 			$table->string('description', 191)->nullable();

@@ -11,10 +11,12 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\User::insert([
+        $user = \App\User::create([
             'name' => '用户',
             'email' =>'admin',
             'password' => bcrypt('123456')
         ]);
+        // 初始化用户角色，将 1 号用户指派为『站长』
+        $user->assignRole('admin');
     }
 }
