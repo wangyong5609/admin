@@ -22,7 +22,7 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">主要内容</a></li>
                 </ul>
-
+                @include('common.error')
                 <div class="tab-content">
 
                     <div class="tab-pane active" id="tab_1">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Dict;
 use App\Enums\DictTypes;
 use App\Helper\Util;
+use App\Http\Requests\StaffRequest;
 use App\Post;
 use App\StaffWorkLog;
 use Carbon\Carbon;
@@ -69,7 +70,7 @@ class StaffController extends Controller
      * @param    \Illuminate\Http\Request  $request
      * @return  \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StaffRequest $request)
     {
         $staff = new Staff();
         $posts = $request->posts;
