@@ -26,6 +26,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $user = \Auth::user();
+
+        if (! $user->hasRole('admin')){
+            return redirect('mission');
+        }
         $query = $this->applyFilters(Staff::query());
         $staffs = $query->orderBy('status')->paginate($this->pageNumber());
         return view('home',compact('staffs'));

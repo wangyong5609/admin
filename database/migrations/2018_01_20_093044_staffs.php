@@ -31,8 +31,10 @@ class Staffs extends Migration
 
         $table->String('description')->nullable();
         $table->String('mission_rt')->nullable();
+        $table->string('phone')->nullable();
 
-        /**
+
+            /**
          * Foreignkeys section
          */
         

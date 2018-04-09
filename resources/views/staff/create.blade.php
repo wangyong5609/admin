@@ -46,6 +46,12 @@
 
                         </div>
                         <div class="form-group">
+                            <label>手机号码
+                            </label>
+                            <input required="required" id="phone" name = "phone" type="tel" class="form-control" autocomplete="off"
+                                   placeholder="手机号码" maxlength="80">
+                        </div>
+                        <div class="form-group">
                             <label>描述
                             </label>
                             <input  id="description" name = "description" type="text" class="form-control"  autocomplete="off"

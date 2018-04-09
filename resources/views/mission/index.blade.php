@@ -80,15 +80,22 @@
                             <td title="{{$mission->remark}}">{!!str_limit($mission->remark,20)!!}</td>
                             <td>
                                 <div>
-                                    <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
+
                                     @if($mission->complete_time == '未完成')
                                         @if($mission->start_time)
                                             <a href = '{{url('/mission/'.$mission->id.'/complete')}}'>  完成</a>
                                         @else
-                                            <a href = '{{url('/mission/'.$mission->id.'/start')}}' @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1) style="color: red" @endif>  接单</a>
+                                            <a href = '{{url('/mission/'.$mission->id.'/start')}}'
+                                               @if(\Carbon\Carbon::now()->diffInDays(new \Carbon\Carbon($mission->created_at)) >= 1)
+                                               style="color: red"
+                                                    @endif
+                                            >  接单</a>
                                         @endif
                                     @endif
-                                    <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
+                                        <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
+                                    @if(Auth::user()->hasRole('admin'))
+                                    <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
+                                        @endif
                                 </div>
                             </td>
                         </tr>

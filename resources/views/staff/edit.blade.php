@@ -41,6 +41,12 @@
                                 {{$post->name}}
                             @endforeach
                         </div>
+                        <div class="form-group">
+                            <label>手机号码
+                            </label>
+                            <input  id="phone" name = "phone" type="tel" class="form-control"
+                                   value="{!!$staff->phone!!}" maxlength="80">
+                        </div>
                         {{--<div class="form-group">--}}
                             {{--<label>员工状态--}}
                                 {{--<small class="text-red">*</small>--}}

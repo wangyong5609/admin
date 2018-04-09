@@ -53,6 +53,7 @@ Route::group(['middleware'=> ['web','auth']],function(){
     Route::get('reset', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
+    Route::resource('users', 'UsersController', ['only' => ['show', 'update', 'edit']]);
 });
 
 Route::get('/test','\App\Http\Controllers\TestController@index');

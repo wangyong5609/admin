@@ -38,6 +38,7 @@
                         <th>岗位</th>
                         <th>状态</th>
                         <th>描述</th>
+                        <th>电话号码</th>
                         <th>操作</th>
                         </thead>
                         <tbody>
@@ -55,6 +56,7 @@
                                     </select>
                                 </td>
                                 <td>{!!$staff->description!!}</td>
+                                <td>{!!$staff->phone!!}</td>
                                 <td>
                                     <div>
                                         <a href = '{{url('/staff/'.$staff->id.'/edit')}}'>  修改</a>

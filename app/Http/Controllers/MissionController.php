@@ -14,9 +14,12 @@ use App\MissionSwitch;
 use App\Post;
 use App\Staff;
 use App\StaffWorkLog;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Mission;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use URL;
 
 /**
@@ -27,7 +30,13 @@ use URL;
  */
 class MissionController extends Controller
 {
+
     use Util;
+
+    public function __construct()
+    {
+        $this->middleware('no_access', ['except' => ['index','start','complete','showRemarkForm','update']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -37,6 +46,8 @@ class MissionController extends Controller
     {
         $title = 'Index - mission';
         $query = $this->applyFilters(Mission::query()->where('is_template',false));
+        if(! \Auth::user()->hasRole('admin'))
+            $query->where('staff_id',\Auth::user()->staff_id);
         $missions = $query->show()->orderBy('status')->orderBy('created_at','desc')->paginate($this->pageNumber());
         $posts = Dict::where('type',DictTypes::STAFF_POST)->get();
         $status = Dict::where('type',DictTypes::MISSION_STATUS)->get();

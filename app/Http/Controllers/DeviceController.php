@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 class DeviceController extends Controller
 {
     use Util;
+
+    public function __construct()
+    {
+        $this->middleware('no_access', ['except' => []]);
+    }
     /**
      * Display a listing of the resource.
      *

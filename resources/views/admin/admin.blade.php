@@ -54,9 +54,28 @@
                             {{--</li>--}}
                         {{--</ul>--}}
                     {{--</li>--}}
-                    <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            {{ \Illuminate\Support\Facades\Auth::user()->name }} <span class="caret"></span>
+                        </a>
+
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="{{ route('logout') }}"
+                                   onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                                    退出登录
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    {{ csrf_field() }}
+                                </form>
+                            </li>
+                        </ul>
                     </li>
+                    {{--<li>--}}
+                        {{--<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>--}}
+                    {{--</li>--}}
                 </ul>
             </div>
         </nav>
@@ -68,15 +87,15 @@
 @section('main-sidebar')
     <aside class="main-sidebar">
         <section class="sidebar">
-            <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="{{url('dist/img/avatar.jpeg')}}" class="img-circle" alt="User Image">
-                </div>
-                <div class="pull-left info">
-                    <p>管理员</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-                </div>
-            </div>
+            {{--<div class="user-panel">--}}
+                {{--<div class="pull-left image">--}}
+                    {{--<img src="{{url('dist/img/avatar.jpeg')}}" class="img-circle" alt="User Image">--}}
+                {{--</div>--}}
+                {{--<div class="pull-left info">--}}
+                    {{--<p>管理员</p>--}}
+                    {{--<a href="#"><i class="fa fa-circle text-success"></i> Online</a>--}}
+                {{--</div>--}}
+            {{--</div>--}}
             <!-- search form -->
             {{--<form action="#" method="get" class="sidebar-form">--}}
                 {{--<div class="input-group">--}}
@@ -93,60 +112,73 @@
             <ul class="sidebar-menu">
                 <li class="header">主导航栏</li>
 
-                <li class="treeview">
-                    <a href="{{url('/home')}}">
-                        <i class="fa  fa-check-square"></i>
-                        <span>当前状态</span>
-                        <span class="pull-right-container">
+
+                @if(Auth::user()->hasRole('admin'))
+                    <li class="treeview">
+                        <a href="{{url('/home')}}">
+                            <i class="fa  fa-check-square"></i>
+                            <span>当前状态</span>
+                            <span class="pull-right-container">
                              <i class="fa fa-angle-left pull-right"></i>
                          </span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="{{url('/mission')}}">
-                        <i class="fa   fa-cube"></i>
-                        <span>任务列表</span>
-                        <span class="pull-right-container">
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="{{url('/mission')}}">
+                            <i class="fa   fa-cube"></i>
+                            <span>任务列表</span>
+                            <span class="pull-right-container">
                              <i class="fa fa-angle-left pull-right"></i>
                          </span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="{{url('/staff')}}">
-                        <i class="fa fa-user"></i>
-                        <span>人员列表</span>
-                        <span class="pull-right-container">
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="{{url('/staff')}}">
+                            <i class="fa fa-user"></i>
+                            <span>人员列表</span>
+                            <span class="pull-right-container">
                              <i class="fa fa-angle-left pull-right"></i>
                          </span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="{{url('/mission_template')}}">
-                        <i class="fa fa-anchor"></i>
-                        <span>任务模板</span>
-                        <span class="pull-right-container">
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="{{url('/mission_template')}}">
+                            <i class="fa fa-anchor"></i>
+                            <span>任务模板</span>
+                            <span class="pull-right-container">
                              <i class="fa fa-angle-left pull-right"></i>
                          </span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="{{url('/devices')}}">
-                        <i class="fa fa-anchor"></i>
-                        <span>设备管理</span>
-                        <span class="pull-right-container">
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="{{url('/devices')}}">
+                            <i class="fa fa-anchor"></i>
+                            <span>设备管理</span>
+                            <span class="pull-right-container">
                              <i class="fa fa-angle-left pull-right"></i>
                          </span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="{{url('/log')}}">
-                        <i class="fa  fa-file-text-o"></i>
-                        <span>操作日志</span>
-                        <span class="pull-right-container">
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="{{url('/log')}}">
+                            <i class="fa  fa-file-text-o"></i>
+                            <span>操作日志</span>
+                            <span class="pull-right-container">
                              <i class="fa fa-angle-left pull-right"></i>
                          </span>
-                    </a>
-                </li>
+                        </a>
+                    </li>
+                    @else
+                    <li class="treeview">
+                        <a href="{{url('/mission')}}">
+                            <i class="fa  fa-file-text-o"></i>
+                            <span>我的任务</span>
+                            <span class="pull-right-container">
+                             <i class="fa fa-angle-left pull-right"></i>
+                         </span>
+                        </a>
+                    </li>
+                @endif
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-user"></i>
@@ -157,6 +189,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="{{url('reset')}}"><i class="fa fa-star-o"></i>修改密码</a></li>
+                        <li><a href="{{ route('users.edit', Auth::id()) }}"><i class="fa fa-star-o"></i>修改信息</a></li>
                     </ul>
                 </li>
             </ul>

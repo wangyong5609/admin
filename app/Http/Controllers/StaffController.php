@@ -24,6 +24,10 @@ use URL;
 class StaffController extends Controller
 {
     use  Util;
+    public function __construct()
+    {
+        $this->middleware('no_access');
+    }
     /**
      * Display a listing of the resource.
      *

@@ -34,7 +34,7 @@ class Missions extends Migration
         
         $table->dateTime('end_time')->nullable();
 
-        $table->dateTime('plan_end_time');
+        $table->dateTime('plan_end_time')->nullable();
         
         $table->dateTime('complete_time')->nullable();
         
@@ -53,6 +53,8 @@ class Missions extends Migration
         $table->boolean('show')->default(true);
 
         $table->boolean('priority')->nullable();
+
+
 
         /**
          * Foreignkeys section
