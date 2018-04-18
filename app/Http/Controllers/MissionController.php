@@ -19,6 +19,11 @@ use Illuminate\Http\Request;
 use App\Mission;
 use URL;
 use App\Files;
+use Ender\YunPianSms\SMS\YunPianSms;
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 
 /**
  * Class MissionController.
@@ -134,7 +139,19 @@ class MissionController extends Controller
         $files = Files::orderBy("id","desc")->take(10)->get();
         return view('mission.assign',compact('mission','staffs','priority',"files"));
     }
+    static public function sendMSG($mobile,$task){
 
+        if(strlen($mobile)!=11)return false;
+        if(strlen($task)==0)return false;
+        $log = new Logger('sms_log');
+        $log_path = storage_path().'/logs/msg.log';
+        $log->pushHandler(new StreamHandler($log_path, Logger::NOTICE));
+        $log->notice("smd :$mobile => $task");
+//        $sms_key = env("SMS_KEY");
+//        $yunpianSms=new YunPianSms($sms_key);
+//        $response=$yunpianSms->sendMsg($mobile,"【excty网】您有新任务：$task ,请进入任务管理系统处理。");
+        return true;
+    }
     /**
      * 发布任务
      * @param Request $request
@@ -173,6 +190,7 @@ class MissionController extends Controller
                 'modification' => Staff::find($datum['staff_id'])->name,
                 'created_at' => Carbon::now()->toDateTimeString()
             ];
+            self::sendMSG(Staff::find($datum['staff_id'])->phone,$insert['name']);
             Log::insert($data);
         }
 
