@@ -19,6 +19,7 @@
         </div>
         <div class="box-body table-responsive">
             <form action="{{url('/files/upload')}}" method="post" enctype="multipart/form-data">
+                {!! csrf_field() !!}
                 选择需要上传的文件:
                     <div class="box-header with-border">
                     <input type="file" name="file" id="file">

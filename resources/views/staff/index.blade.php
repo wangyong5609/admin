@@ -14,7 +14,7 @@
     <a href="{{url('staff/create')}}" class="btn btn-primary margin-bottom">添加员工</a>
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">员工列表({{app(\App\StaffWorkLog::class)->todayStatus()}})</h3>
+            <h3 class="box-title">员工列表({!!app(\App\StaffWorkLog::class)->todayStatus()!!})</h3>
             <div class="box-tools">
                 <form action="{{url('staff')}}" method="get">
                     <div class="input-group">

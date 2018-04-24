@@ -140,16 +140,15 @@ class MissionController extends Controller
         return view('mission.assign',compact('mission','staffs','priority',"files"));
     }
     static public function sendMSG($mobile,$task){
-
         if(strlen($mobile)!=11)return false;
         if(strlen($task)==0)return false;
         $log = new Logger('sms_log');
         $log_path = storage_path().'/logs/msg.log';
         $log->pushHandler(new StreamHandler($log_path, Logger::NOTICE));
         $log->notice("smd :$mobile => $task");
-//        $sms_key = env("SMS_KEY");
-//        $yunpianSms=new YunPianSms($sms_key);
-//        $response=$yunpianSms->sendMsg($mobile,"【excty网】您有新任务：$task ,请进入任务管理系统处理。");
+        $sms_key = env("SMS_KEY");
+        $yunpianSms=new YunPianSms($sms_key);
+        $response=$yunpianSms->sendMsg($mobile,"【excty网】您有新任务：$task ,请进入任务管理系统处理。");
         return true;
     }
     /**

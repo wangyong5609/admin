@@ -23,18 +23,18 @@
 
                     <div class="tab-pane active" id="tab_1">
                         <div class="form-group">
-                            <label>任务名称
+                            <label>设备名称
                                 <small class="text-red">*</small>
                             </label>
                             <input required="required" id="name" name = "name" type="text" class="form-control" autocomplete="off"
                                    value="{!!$device->name!!}" maxlength="80">
                         </div>
                         <div class="form-group">
-                            <label>任务上限
+                            <label>设备数量
                                 <small class="text-red">*</small>
                             </label>
                             <input required="required" id="amount" name = "amount"type="number" class="form-control"  autocomplete="off"
-                                   placeholder="任务上限" maxlength="80" value="{{$device->amount}}">
+                                   placeholder="设备数量" maxlength="80" value="{{$device->amount}}">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">保存</button>
