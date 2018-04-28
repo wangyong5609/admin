@@ -18,6 +18,8 @@ class StaffWorkLog extends Model
 
     public function todayStatus()
     {
-        return $this->where('date',Carbon::now()->toDateString())->exists()?'已保存今日状态':'未保存今日状态';
+        return $this->where('date',Carbon::now()->toDateString())->exists()?
+            '<span>已保存今日状态</span>':
+            '<span style="color: #f00;">未保存今日状态</span>';
     }
 }
