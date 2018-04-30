@@ -72,10 +72,10 @@ class StaffController extends Controller
      */
     public function store(StaffRequest $request)
     {
+
         $staff = new Staff();
         $posts = $request->posts;
         $staff->fill($request->intersect($staff->getFillable()));
-
         $staff->save();
         foreach ($posts as $post){
             $staff->posts()->attach($post);
@@ -116,8 +116,6 @@ class StaffController extends Controller
         {
             return URL::to('staff/'. $id . '/edit');
         }
-
-        
         $staff = Staff::findOrfail($id);
         $posts = Post::get();
         $status = Dict::where('type',DictTypes::STAFF_STATUS)->get();
