@@ -251,6 +251,7 @@ class MissionController extends Controller
         $query = Mission::query()->where('staff_id',$model->staff_id);
         $model->status = Dict::query()->ofCode('complete')->first()->id;
         $model->complete_time = Carbon::now()->toDateTimeString();
+        $model->life = $model->Consuming;
         $model->save();
         app(MissionSwitch::class)->missionOff($model->id);
         $wait_mission = (clone $query)->where('status',Dict::ofCode('wait')->first()->id)->orderBy('priority','desc')->first();

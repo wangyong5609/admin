@@ -85,7 +85,6 @@
                             <td title="{{$mission->remark}}">{!!str_limit($mission->remark,20)!!}</td>
                             <td>
                                 <div>
-                                    <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
                                     @if($mission->complete_time == '未完成')
                                         @if($mission->start_time)
                                             <a href = '{{url('/mission/'.$mission->id.'/complete')}}'>  完成</a>
@@ -98,10 +97,10 @@
                                             @endif
                                         @endif
                                     @endif
-                                        <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
                                     @if(Auth::user()->hasRole('admin'))
-                                    <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
-                                        @endif
+                                        <a href = '{{url('/mission/'.$mission->id.'/edit')}}'>  修改</a>
+                                        <a href = '{{url('/mission/'.$mission->id.'/remark')}}'>备注</a>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

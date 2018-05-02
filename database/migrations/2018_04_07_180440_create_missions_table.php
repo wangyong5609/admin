@@ -27,7 +27,7 @@ class CreateMissionsTable extends Migration {
 			$table->integer('staff_id')->nullable();
 			$table->integer('upper');
 			$table->float('sustain');
-			$table->integer('life')->nullable();
+			$table->float('life')->nullable();
 			$table->boolean('is_template')->default(0);
 			$table->boolean('show')->default(1);
 			$table->boolean('priority')->nullable();
